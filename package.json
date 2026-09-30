@@ -1,0 +1,28 @@
+{
+  "name": "hisab-ai",
+  "version": "1.0.0",
+  "description": "Multilingual Voice & AI Financial Data Analyst",
+  "main": "backend/server.js",
+  "scripts": {
+    "dev": "node --watch backend/server.js",
+    "start": "node backend/server.js",
+    "seed": "node backend/database/seed.js",
+    "test": "node tests/run_all.js",
+    "test:aa": "node tests/aa_tests.js",
+    "test:calc": "node tests/financial_tests.js",
+    "test:sec": "node tests/security_tests.js",
+    "test:cust": "node tests/customer_credit_tests.js",
+    "test:pay": "node tests/payment_gateway_tests.js",
+    "test:voice": "node tests/voice_tests.js",
+    "test:ai": "node tests/ai_voice_tests.js"
+  },
+  "keywords": [
+    "finance",
+    "analytics",
+    "voice",
+    "ai",
+    "khatabook"
+  ],
+  "author": "",
+  "license": "ISC"
+}

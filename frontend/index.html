@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hisab — Intelligent Digital Ledger & Voice Khatabook</title>
+  <meta name="description" content="Say goodbye to notes or khatabooks, digitize your way into our Hisab. Seamless voice-powered bookkeeping for merchants, businesses, and personal finance.">
+  
+  <!-- Typography: Fraunces (Sculpted Display Serif) + Plus Jakarta Sans (Precision Numerals & UI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Three.js for 3D Resadex-style interactive centerpiece -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <!-- Top Left: Clickable Hisab Logo / Tag -->
+      <a href="index.html" class="brand-tag" id="brandLogo" aria-label="Hisab Home">
+        <span class="brand-icon-wrap" aria-hidden="true">
+          <!-- Custom Bahi-Khata Ledger Monogram SVG -->
+          <svg class="brand-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2" stroke="currentColor"/>
+            <line x1="8" y1="3" x2="8" y2="21" stroke-width="1.8" stroke="currentColor"/>
+            <line x1="8" y1="9" x2="18" y2="9" stroke-width="1.5" stroke-dasharray="2 1.5"/>
+            <line x1="8" y1="15" x2="18" y2="15" stroke-width="1.5" stroke-dasharray="2 1.5"/>
+            <circle cx="14" cy="6" r="1" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="brand-text">Hisab</span>
+        <span class="brand-pill beta-muted" id="brandAuthBadge">BETA 2.4</span>
+      </a>
+
+      <!-- Center Subtle Status Pill -->
+      <div class="ledger-status-pill" id="headerStatusPill">
+        <span class="status-indicator" id="headerStatusIndicator"></span>
+        <span id="headerStatusText">Voice Engine Active</span>
+        <span class="pill-divider">•</span>
+        <span id="headerStatusSubtext">Indian Rupee (₹)</span>
+      </div>
+
+      <!-- Top Right: 3-line Hamburger Menu Button -->
+      <div class="nav-right-cluster">
+        <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navDrawer">
+          <span class="hamburger-box">
+            <span class="hamburger-bar bar-1"></span>
+            <span class="hamburger-bar bar-2"></span>
+            <span class="hamburger-bar bar-3"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hamburger Navigation Drawer / Overlay -->
+  <div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
+  <aside class="nav-drawer" id="navDrawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="drawer-brand">
+        <svg class="brand-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2"/>
+          <line x1="8" y1="3" x2="8" y2="21" stroke-width="1.8"/>
+        </svg>
+        <span id="drawerTitle">Hisab Menu</span>
+      </div>
+      <button class="drawer-close-btn" id="drawerCloseBtn" aria-label="Close navigation menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="drawer-nav">
+      <!-- Public Visitor Drawer Links -->
+      <ul class="drawer-links" id="publicDrawerLinks">
+        <li>
+          <a href="#home" class="drawer-link active" id="drawerLinkHome">
+            <span class="link-symbol">01</span>
+            <span class="link-label">Home</span>
+            <span class="link-indicator"></span>
+          </a>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerLinkHowItWorks">
+            <span class="link-symbol">02</span>
+            <span class="link-label">How it works</span>
+            <span class="link-action-tag">Voice Demo</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerLinkPricing">
+            <span class="link-symbol">03</span>
+            <span class="link-label">Pricing</span>
+            <span class="badge-free-pill">100% Free</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerLinkDownload">
+            <span class="link-symbol">04</span>
+            <span class="link-label">Download APK</span>
+            <span class="badge-android">Android v2.4</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerLinkLogin">
+            <span class="link-symbol">05</span>
+            <span class="link-label">Login or Register</span>
+            <span class="link-action-tag">Merchant Portal</span>
+          </button>
+        </li>
+      </ul>
+
+      <!-- Authenticated Merchant Subsections (Accessible via Top-Right 3-Line Menu) -->
+      <ul class="drawer-links" id="authDrawerLinks" style="display: none;">
+        <li>
+          <button type="button" class="drawer-link" id="drawerAuthPayments">
+            <span class="link-symbol">01</span>
+            <span class="link-label">Payments &amp; Provider History</span>
+            <span class="link-action-tag">Live</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerAuthUploadCsv">
+            <span class="link-symbol">02</span>
+            <span class="link-label">Upload CSV Records</span>
+            <span class="badge-free-pill">Ingestion</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerAuthProfile">
+            <span class="link-symbol">03</span>
+            <span class="link-label">Profile Details Data</span>
+            <span class="badge-android">Verified</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerAuthInventory">
+            <span class="link-symbol">04</span>
+            <span class="link-label">Inventory Data</span>
+            <span class="badge-android" id="drawerInventoryBadge">14 SKUs</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerAuthCustomers">
+            <span class="link-symbol">05</span>
+            <span class="link-label">Customers</span>
+            <span class="badge-free-pill" id="drawerRepeatCustomersBadge">7 Repeat</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerAuthProviders">
+            <span class="link-symbol">06</span>
+            <span class="link-label">Payment Providers</span>
+            <span class="badge-free-pill">4 Connected</span>
+          </button>
+        </li>
+        <li class="drawer-divider-li"></li>
+        <li>
+          <button type="button" class="drawer-link text-crimson" id="drawerAuthLogout">
+            <span class="link-symbol">07</span>
+            <span class="link-label">Lock &amp; Sign Out</span>
+            <span class="link-action-tag">Exit</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="drawer-footer">
+      <div class="drawer-quick-stat">
+        <span class="stat-caption">Offline Ledger Sync</span>
+        <span class="stat-state">Encrypted Locally</span>
+      </div>
+      <div class="drawer-policy-links">
+        <button class="text-link" id="drawerToSBtn">Terms of Service</button>
+        <span class="policy-sep">/</span>
+        <button class="text-link" id="drawerPrivacyBtn">Privacy Policy</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Layout -->
+  <main id="home" class="main-stage">
+    
+    <!-- Hero Section with Resadex-inspired 3D centerpiece and prominent typography -->
+    <section class="hero-section" aria-labelledby="heroTitle">
+      <div class="hero-container">
+        
+        <!-- Interactive 3D Canvas Centerpiece (Three.js WebGL with tactile ledger coin / acoustic sphere) -->
+        <div class="centerpiece-viewport" id="centerpieceViewport" title="Interactive 3D Ledger Core — Move cursor or click to interact">
+          <canvas id="threeCanvas" class="three-canvas" aria-label="3D Interactive Ledger Vault Token"></canvas>
+          <div class="centerpiece-badges" aria-hidden="true">
+            <span class="spec-tag left">Jama / Credit ₹</span>
+            <span class="spec-tag right">Udhar / Debit ₹</span>
+          </div>
+        </div>
+
+        <!-- Centered Core Titles -->
+        <div class="hero-editorial">
+          <div class="hero-overline">
+            <span class="overline-dot"></span>
+            <span>NEXT-GENERATION VOICE BOOKKEEPING</span>
+          </div>
+
+          <h1 class="hero-title" id="heroTitle">Hisab</h1>
+
+          <p class="hero-subtext">
+            Your khatabook, now voice-powered.
+          </p>
+
+          <!-- Micro-prompt examples (Moved directly below headline - Item 4) -->
+          <div class="prompt-suggestions">
+            <span class="suggestions-label">Try speaking:</span>
+            <button class="suggestion-chip" data-sample="Ramesh paid 450 rupees for grocery">"Ramesh paid ₹450 for grocery"</button>
+            <button class="suggestion-chip" data-sample="Gave 1200 udhar to Sharma ji">"Gave ₹1,200 udhar to Sharma ji"</button>
+            <button class="suggestion-chip" data-sample="Paid 800 rupees electric bill">"Paid ₹800 electric bill"</button>
+          </div>
+
+          <!-- CTA Buttons: Primary Voice Chat & Secondary Open my Hisab (Items 2, 3, 7) -->
+          <div class="hero-actions">
+            <button class="voice-chat-btn primary-cta" id="voiceChatBtn" aria-haspopup="dialog" aria-expanded="false">
+              <span class="btn-wave-ring" aria-hidden="true"></span>
+              <span class="mic-icon-wrap" aria-hidden="true">
+                <!-- Custom Microphone Vector SVG -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="22"/>
+                  <line x1="8" y1="22" x2="16" y2="22"/>
+                </svg>
+              </span>
+              <span class="btn-title">Voice Chat</span>
+            </button>
+
+            <button class="hero-secondary-btn" id="heroEnterBtn" aria-label="Open my Hisab Merchant Portal">
+              <span>Open my Hisab</span>
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <!-- Trust Line directly below CTAs (Item 5) -->
+          <p class="hero-trust-line">
+            Free to use · No app download needed · Works in Hindi, Hinglish &amp; English
+          </p>
+
+        </div>
+
+      </div>
+    </section>
+
+
+
+
+
+  </main>
+
+  <!-- ==========================================================================
+       Authenticated Merchant Workspace (Accessible Strictly After Successful Login)
+       ========================================================================== -->
+  <main id="merchantWorkspace" class="merchant-workspace" style="display: none;" aria-label="Merchant Accounts &amp; Provider History">
+    
+    <!-- Merchant Status & Store Header Strip -->
+    <div class="workspace-top-bar">
+      <div class="workspace-store-meta">
+        <div class="store-avatar" id="merchantAvatarLetter">G</div>
+        <div class="store-info-text">
+          <div class="store-title-row">
+            <h2 class="store-heading" id="workspaceStoreName">Garg Kirana &amp; General Store</h2>
+            <span class="badge-verified-merchant">Verified Merchant</span>
+          </div>
+          <p class="store-subtext">
+            <span>Owner: <strong id="workspaceOwnerName">Ramesh Garg</strong></span>
+            <span class="meta-dot">•</span>
+            <span>GSTIN: <span id="workspaceGstin">07AAAAA0000A1Z5</span></span>
+            <span class="meta-dot">•</span>
+            <span>Settlement: <strong>HDFC Current A/C ••4821</strong></span>
+          </p>
+        </div>
+      </div>
+
+      <div class="workspace-quick-actions">
+        <button type="button" class="action-btn-outline" id="syncGatewaysBtn" title="Sync live payment provider feeds">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          <span>Sync Gateways</span>
+        </button>
+        <button type="button" class="action-btn-outline" id="workspaceDownloadReportBtn" title="Download unified records">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Export Records</span>
+        </button>
+        <button type="button" class="action-btn-lock" id="quickLockBtn" title="Lock workspace and return to homepage">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>Lock</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Onboarding State: Shown ONLY when NEITHER condition (payment provider or CSV) is satisfied -->
+    <div class="unconnected-setup-stage" id="unconnectedSetupStage">
+      <div class="setup-hero-card">
+        <div class="setup-badge-overline">
+          <span class="overline-dot"></span>
+          <span>ACTION REQUIRED TO POPULATE DATA</span>
+        </div>
+        <h3 class="setup-hero-title">Connect a Payment Provider or Upload a CSV File</h3>
+        <p class="setup-hero-subtitle">
+          To maintain ledger integrity and data privacy, no accounts data or customer metrics are displayed until you connect a payment provider or import a statement. Select either of the two options below to unlock your workspace:
+        </p>
+
+        <div class="setup-options-grid">
+          <!-- Option 1: Connect Bank Account & UPI via Account Aggregator -->
+          <div class="setup-option-card" id="optionCardProvider">
+            <div class="option-header-row">
+              <div class="option-icon-box provider-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 3L2 10h20L12 3z"/>
+                </svg>
+              </div>
+              <span class="option-badge-pill">RBI Regulated AA</span>
+            </div>
+
+            <h4 class="option-title">Connect Bank Account &amp; UPI</h4>
+            <p class="option-description">
+              Link your Indian bank account directly through India's consent-based <strong>Account Aggregator (AA)</strong> ecosystem to automatically import and analyze UPI transactions. 100% read-only — zero passwords, PINs, or OTPs required.
+            </p>
+
+            <div class="option-tags-cluster">
+              <span class="setup-tag">RBI Consent Rails</span>
+              <span class="setup-tag">Automated UPI Import</span>
+              <span class="setup-tag">HDFC / SBI / ICICI</span>
+              <span class="setup-tag">Zero Password/PIN</span>
+            </div>
+
+            <div class="option-action-row">
+              <button type="button" class="btn-connect-primary" id="btnConnectBankPrompt">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+                <span>Connect Bank Account (AA)</span>
+              </button>
+              <button type="button" class="btn-connect-secondary" id="btnQuickConnectUpi">
+                <span>1-Click Connect Demo Bank</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Option 2: Upload a CSV File -->
+          <div class="setup-option-card" id="optionCardCsv">
+            <div class="option-header-row">
+              <div class="option-icon-box csv-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="12" y1="18" x2="12" y2="12"/>
+                  <line x1="9" y1="15" x2="12" y2="12"/>
+                  <line x1="15" y1="15" x2="12" y2="12"/>
+                </svg>
+              </div>
+              <span class="option-badge-pill">Option 2</span>
+            </div>
+
+            <h4 class="option-title">Upload a CSV File</h4>
+            <p class="option-description">
+              Upload a transaction statement or PoS settlement log in CSV format. Data is parsed, analyzed, and integrated into your inflow/outflow views and customer ledger instantly.
+            </p>
+
+            <div class="option-tags-cluster">
+              <span class="setup-tag">.CSV Format</span>
+              <span class="setup-tag">Bank Statements</span>
+              <span class="setup-tag">PoS Logs</span>
+              <span class="setup-tag">Auto-Parse</span>
+            </div>
+
+            <input type="file" id="promptCsvFileInput" accept=".csv,text/csv" style="display: none;">
+
+            <div class="option-action-row">
+              <button type="button" class="btn-connect-primary" id="btnPromptUploadCsv">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Upload CSV File</span>
+              </button>
+              <button type="button" class="btn-connect-secondary" id="btnPromptLoadSampleCsv">
+                <span>Load Sample CSV (12 Rows)</span>
+              </button>
+            </div>
+            <button type="button" class="btn-download-template-link" id="btnPromptDownloadTemplate">
+              <span>Download sample template (.csv)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connected Data Container: Visible ONLY when at least one condition is satisfied -->
+    <div class="connected-data-stage" id="connectedDataStage" style="display: none;">
+      
+      <!-- Active Connection Status Banner -->
+      <div class="active-connection-banner" id="activeConnectionBanner">
+        <div class="connection-status-left">
+          <span class="status-indicator"></span>
+          <span class="conn-text">Active Source: <strong id="activeSourceLabel">NPCI UPI Stack Connected</strong></span>
+          <span class="conn-dot">•</span>
+          <span class="conn-time" id="activeSourceSub">Live transaction stream synchronized</span>
+        </div>
+        <div class="connection-actions-right">
+          <button type="button" class="btn-conn-action" id="btnSwitchAddSource">+ Add / Switch Source</button>
+          <button type="button" class="btn-conn-action text-crimson" id="btnDisconnectSource">Disconnect / Reset Data</button>
+        </div>
+      </div>
+
+      <!-- Connected Bank Accounts & AA Live Sync Strip -->
+      <div class="connected-bank-sync-strip" id="connectedBankSyncStrip">
+        <div class="bank-strip-left">
+          <div class="bank-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 3L2 10h20L12 3z"/>
+            </svg>
+          </div>
+          <div class="bank-details-meta">
+            <div class="bank-title-line">
+              <strong id="connectedBankName">HDFC Bank</strong>
+              <span class="bank-acc-masked" id="connectedBankMaskedAcc">•••• 4821</span>
+              <span class="aa-tag-pill" id="connectedBankStatusBadge">DEMO DATA</span>
+            </div>
+            <div class="bank-sync-time">
+              <span>Consent: <strong id="connectedBankConsentStatus">Active (RBI AA)</strong></span>
+              <span class="conn-dot">•</span>
+              <span id="connectedBankLastSync">Last Synced: Just now</span>
+              <span class="conn-dot">•</span>
+              <span id="connectedBankTxnCount">13 Transactions (9 UPI)</span>
+            </div>
+          </div>
+        </div>
+        <div class="bank-strip-actions">
+          <button type="button" class="btn-sync-now" id="btnSyncBankNow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sync-icon">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span id="btnSyncBankText">Sync Transactions</span>
+          </button>
+          <button type="button" class="btn-conn-action" id="btnLinkAnotherBank">+ Link Another Bank</button>
+          <button type="button" class="btn-conn-action text-crimson" id="btnDisconnectBank">Disconnect Bank</button>
+        </div>
+      </div>
+
+      <!-- Multilingual Voice Data AI Assistant Bar -->
+      <section class="ai-analyst-bar-card" id="aiAnalystBarCard" aria-label="AI Financial Data Analyst">
+        <div class="ai-analyst-header">
+          <div class="ai-analyst-brand">
+            <div class="ai-avatar-pulse" id="inlineAiAvatarPulse">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="22"/>
+                <line x1="8" y1="22" x2="16" y2="22"/>
+              </svg>
+            </div>
+            <div class="ai-brand-titles">
+              <div class="ai-title-row">
+                <h3 class="ai-title">Hisab Multilingual AI Analyst</h3>
+                <span class="ai-lang-pill-tag" id="aiActiveLangTag">Telugu • Hindi • English</span>
+                <span class="ai-engine-status-pill" id="aiEngineStatusPill">Ollama Active</span>
+              </div>
+              <p class="ai-subtitle">Speak or type in Telugu, Hindi, English, or mixed slang to interrogate your financial data instantly.</p>
+            </div>
+          </div>
+          <div class="ai-bar-controls">
+            <!-- Language Quick Switcher -->
+            <div class="ai-lang-selector" id="inlineAiLangSelector" role="radiogroup" aria-label="Spoken Language">
+              <button type="button" class="ai-lang-chip active" data-lang="auto">Auto Detect</button>
+              <button type="button" class="ai-lang-chip" data-lang="te-IN">తెలుగు (Telugu)</button>
+              <button type="button" class="ai-lang-chip" data-lang="hi-IN">हिंदी (Hindi)</button>
+              <button type="button" class="ai-lang-chip" data-lang="en-IN">English</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive AI Query Input Strip -->
+        <div class="ai-input-wrap">
+          <div class="ai-input-box" id="inlineAiInputBox">
+            <span class="ai-input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </span>
+            <input type="text" id="inlineAiQueryInput" class="ai-query-input" placeholder="Ask your data: 'Hyderabad lo enni customers unnaru?', 'Total sales entha?', 'Who paid the most?'..." autocomplete="off" />
+            <button type="button" class="btn-ai-mic" id="btnInlineAiMic" title="Speak Question (Microphone)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="22"/>
+                <line x1="8" y1="22" x2="16" y2="22"/>
+              </svg>
+              <span class="mic-live-label" id="inlineMicLiveLabel">Speak</span>
+            </button>
+            <button type="button" class="btn-ai-send" id="btnInlineAiSend" title="Submit Question">
+              <span>Ask</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sample Prompt Chips in Telugu, Hindi, English -->
+        <div class="ai-prompt-suggestions" id="inlineAiPromptSuggestions">
+          <span class="suggest-lbl">Try asking:</span>
+          <button type="button" class="ai-prompt-chip" data-query="Telangana lo ee month total sales entha?">"Telangana lo ee month total sales entha?" (Telugu)</button>
+          <button type="button" class="ai-prompt-chip" data-query="Which customer paid the most last month?">"Which customer paid the most?" (English)</button>
+          <button type="button" class="ai-prompt-chip" data-query="Hyderabad lo enni customers unnaru?">"Hyderabad lo enni customers unnaru?" (Telugu)</button>
+          <button type="button" class="ai-prompt-chip" data-query="Pichhle mahine ka total sales kitna tha?">"Pichhle mahine ka total sales kitna tha?" (Hindi)</button>
+          <button type="button" class="ai-prompt-chip" data-query="Repeated customers kaun kaun hain?">"Repeated customers kaun kaun hain?" (Hindi)</button>
+          <button type="button" class="ai-prompt-chip" data-query="Show UPI transactions breakdown">"Show UPI breakdown" (English)</button>
+        </div>
+
+        <!-- Live Inline AI Response Output Box (Initially Hidden until query is asked) -->
+        <div class="ai-response-card" id="inlineAiResponseCard" style="display: none;">
+          <div class="ai-response-header">
+            <div class="ai-response-badge">
+              <span class="ai-status-orb" id="inlineAiStatusOrb"></span>
+              <span class="ai-status-text" id="inlineAiStatusText">AI Analysis</span>
+              <span class="ai-lang-pill" id="inlineAiResponseLangBadge">Telugu</span>
+            </div>
+            <div class="ai-response-actions">
+              <button type="button" class="btn-ai-speak" id="btnInlineAiSpeak" title="Listen with Voice (TTS)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                </svg>
+                <span id="inlineAiSpeakLabel">Read Aloud</span>
+              </button>
+              <button type="button" class="btn-ai-clear" id="btnInlineAiClear" title="Clear Response">✕</button>
+            </div>
+          </div>
+          
+          <div class="ai-response-content">
+            <div class="ai-user-query-echo" id="inlineAiUserQueryEcho"></div>
+            <div class="ai-answer-text" id="inlineAiAnswerText"></div>
+            <div class="ai-data-pills-row" id="inlineAiDataPillsRow"></div>
+            <div class="ai-chart-container" id="inlineAiChartContainer" style="display: none;">
+              <canvas id="inlineAiChartCanvas" width="500" height="200"></canvas>
+            </div>
+          </div>
+
+          <div class="ai-followup-hint">
+            <span class="followup-dot"></span>
+            <span>Follow up naturally, e.g. <em>"What about Telangana?"</em>, <em>"And Hyderabad?"</em>, or <em>"Malli chupinchu"</em></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Navigation Subsections Bar (Sections 01 & 02 on page; 03, 04, 05 strictly inside 3-line menu) -->
+      <nav class="workspace-subnav-strip" aria-label="Workspace Sections">
+        <div class="subnav-links-wrap">
+          <a href="#paymentsProviderSection" class="subnav-pill active" id="subnavLinkPayments">
+            <span>01</span> Payments &amp; Provider History
+          </a>
+          <a href="#csvUploadSection" class="subnav-pill" id="subnavLinkUpload">
+            <span>02</span> Upload CSV Records
+          </a>
+        </div>
+        <div class="workspace-security-tag">
+          <span class="security-dot"></span>
+          <span>AES-256 Encrypted Session</span>
+        </div>
+      </nav>
+
+    <!-- SECTION 1: PAYMENTS AND PROVIDER HISTORY ACCESS -->
+    <section class="workspace-section" id="paymentsProviderSection" aria-labelledby="paymentsHeading">
+      <div class="section-title-wrap">
+        <div class="section-badge-overline">
+          <span class="overline-dot"></span>
+          <span>LIQUIDITY &amp; SETTLEMENT AUDIT</span>
+        </div>
+        <div class="section-heading-row">
+          <div>
+            <h2 class="section-main-heading" id="paymentsHeading">Payments and Provider History Access</h2>
+            <p class="section-subtitle">Real-time incoming and outgoing liquidity across payment gateways and provider rails.</p>
+          </div>
+          <div class="period-selector">
+            <span class="selector-label">Cycle:</span>
+            <button type="button" class="period-chip active" data-period="all">All-Time</button>
+            <button type="button" class="period-chip" data-period="week">This Week</button>
+            <button type="button" class="period-chip" data-period="month">This Month</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inflow and Outflow Analytics Grid -->
+      <div class="liquidity-metrics-grid">
+        <!-- Inflow Card -->
+        <div class="metric-card metric-inflow">
+          <div class="metric-card-header">
+            <div class="metric-icon-wrap inflow-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="12" y1="19" x2="12" y2="5"/>
+                <polyline points="5 12 12 5 19 12"/>
+              </svg>
+            </div>
+            <span class="metric-type-tag">Total Inflow (Jama)</span>
+            <span class="metric-delta positive" id="inflowDeltaTag">+22.4% vs prev</span>
+          </div>
+          <div class="metric-value-row">
+            <span class="currency-symbol">₹</span>
+            <span class="metric-number" id="metricTotalInflow">1,84,650.00</span>
+          </div>
+          <div class="metric-breakdown">
+            <div class="breakdown-item">
+              <span class="item-dot upi"></span>
+              <span class="item-name">UPI / QR</span>
+              <strong class="item-val" id="inflowUpiVal">₹1,25,562</strong>
+            </div>
+            <div class="breakdown-item">
+              <span class="item-dot card"></span>
+              <span class="item-name">Card PoS</span>
+              <strong class="item-val" id="inflowCardVal">₹40,623</strong>
+            </div>
+            <div class="breakdown-item">
+              <span class="item-dot netbanking"></span>
+              <span class="item-name">NetBanking</span>
+              <strong class="item-val" id="inflowNetVal">₹18,465</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outflow Card -->
+        <div class="metric-card metric-outflow">
+          <div class="metric-card-header">
+            <div class="metric-icon-wrap outflow-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <polyline points="19 12 12 19 5 12"/>
+              </svg>
+            </div>
+            <span class="metric-type-tag">Total Outflow (Udhar &amp; Payouts)</span>
+            <span class="metric-count-pill" id="outflowCountTag">18 Disbursements</span>
+          </div>
+          <div class="metric-value-row text-crimson">
+            <span class="currency-symbol">₹</span>
+            <span class="metric-number" id="metricTotalOutflow">62,400.00</span>
+          </div>
+          <div class="metric-breakdown">
+            <div class="breakdown-item">
+              <span class="item-dot vendor"></span>
+              <span class="item-name">Vendor Payouts</span>
+              <strong class="item-val" id="outflowVendorVal">₹40,560</strong>
+            </div>
+            <div class="breakdown-item">
+              <span class="item-dot utility"></span>
+              <span class="item-name">Utilities / Rent</span>
+              <strong class="item-val" id="outflowUtilityVal">₹16,224</strong>
+            </div>
+            <div class="breakdown-item">
+              <span class="item-dot fee"></span>
+              <span class="item-name">Gateway MDR</span>
+              <strong class="item-val" id="outflowFeeVal">₹5,616</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Net Position Card -->
+        <div class="metric-card metric-net">
+          <div class="metric-card-header">
+            <div class="metric-icon-wrap net-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+            </div>
+            <span class="metric-type-tag">Net Liquidity Position</span>
+            <span class="metric-health-pill" id="netHealthTag">Healthy Liquidity</span>
+          </div>
+          <div class="metric-value-row text-jama">
+            <span class="currency-symbol">+₹</span>
+            <span class="metric-number" id="metricNetBalance">1,22,250.00</span>
+          </div>
+          <div class="net-progress-wrap">
+            <div class="progress-labels">
+              <span>Inflow Retention Ratio</span>
+              <strong id="retentionPercentTag">66.2%</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="retentionBarFill" style="width: 66.2%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inflow vs Outflow Visualizer Chart -->
+      <div class="flow-chart-container">
+        <div class="chart-header">
+          <div>
+            <h3 class="chart-title">Inflow vs. Outflow Cashflow Trajectory</h3>
+            <p class="chart-caption">Daily settlement volume across connected payment providers and uploaded CSV records</p>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-item"><span class="legend-box inflow"></span> Inflow (Settled)</span>
+            <span class="legend-item"><span class="legend-box outflow"></span> Outflow (Disbursements)</span>
+          </div>
+        </div>
+        <div class="flow-chart-viewport" id="flowChartViewport">
+          <!-- Dynamically generated SVG Chart -->
+          <svg class="flow-svg-chart" id="flowSvgChart" viewBox="0 0 760 180" preserveAspectRatio="none" aria-label="Cashflow Bar Chart"></svg>
+        </div>
+      </div>
+
+      <!-- PROVIDER HISTORY ACCESS & DETAILED LEDGER TABLE -->
+      <div class="provider-records-block">
+        <div class="records-header-row">
+          <div>
+            <h3 class="records-title">Unified Provider History Records</h3>
+            <p class="records-desc">Filtered payment transactions across UPI, PoS terminals, Bank transfers, and CSV ingestion</p>
+          </div>
+          <div class="records-controls">
+            <div class="search-input-wrap">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="providerSearchInput" placeholder="Filter by customer, UTR, or provider..." aria-label="Filter transactions">
+            </div>
+            <button type="button" class="action-btn-outline" id="exportFilteredBtn" title="Export current view to CSV">
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Provider Filter Tabs -->
+        <div class="provider-tabs-bar" role="tablist">
+          <button type="button" class="provider-tab-btn active" data-provider="all">All Providers (<span id="countAllProviders">24</span>)</button>
+          <button type="button" class="provider-tab-btn" data-provider="UPI / QR">UPI / QR Stack</button>
+          <button type="button" class="provider-tab-btn" data-provider="Card PoS">PoS Card Swipes</button>
+          <button type="button" class="provider-tab-btn" data-provider="Bank NEFT">Bank NEFT/RTGS</button>
+          <button type="button" class="provider-tab-btn" data-provider="Bahi-Khata Cash">Ledger Cash</button>
+          <button type="button" class="provider-tab-btn" data-provider="CSV Ingested">CSV Ingested</button>
+        </div>
+
+        <!-- Records Table -->
+        <div class="records-table-container">
+          <table class="provider-records-table">
+            <thead>
+              <tr>
+                <th>Date &amp; Time</th>
+                <th>Reference / UTR</th>
+                <th>Customer / Beneficiary</th>
+                <th>Provider Rail</th>
+                <th>Flow Type</th>
+                <th class="text-right">Amount (₹)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="providerRecordsTableBody">
+              <!-- Populated dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: FINANCIAL TRANSACTION ANALYTICS DASHBOARD -->
+    <section class="workspace-section" id="csvUploadSection" aria-labelledby="uploadHeading">
+      
+      <!-- Section Header -->
+      <div class="section-title-wrap">
+        <div class="section-badge-overline">
+          <span class="overline-dot"></span>
+          <span>FINANCIAL TRANSACTION ANALYTICS ENGINE</span>
+        </div>
+        <div class="section-heading-row">
+          <div>
+            <h2 class="section-main-heading" id="uploadHeading">Financial Overview &amp; Statement Analytics</h2>
+            <p class="section-subtitle">
+              Upload any bank statement, UPI, or PoS CSV to automatically map columns, validate data quality, normalize records, and generate actionable financial metrics.
+            </p>
+          </div>
+          <div class="analytics-header-actions">
+            <button type="button" class="sample-csv-btn" id="downloadSampleCsvBtn" title="Download standard financial CSV template">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Sample Template (.csv)</span>
+            </button>
+            <button type="button" class="action-btn-outline" id="loadDemoCsvBtn" title="Load sample records with trades & loans">
+              <span>Load Demo Financial Records</span>
+            </button>
+            <button type="button" class="action-btn-outline" id="btnManageDatasets" title="View and switch uploaded datasets">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 6h16M4 12h16M4 18h7"/>
+              </svg>
+              <span>Datasets (<span id="datasetsCountBadge">0</span>)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compact Upload & Dataset Status Strip -->
+      <div class="csv-upload-compact-strip">
+        <div class="csv-drop-compact" id="csvDropZone" tabindex="0" role="button" aria-label="Upload CSV file">
+          <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display: none;">
+          <div class="drop-compact-inner">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <div class="drop-compact-text">
+              <strong>Drag &amp; drop a CSV file here</strong> or <button type="button" class="link-btn-text" id="browseCsvBtn">browse computer</button>
+              <span class="drop-sub-note">Auto-detects columns, normalizes currencies &amp; validates duplicates</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="active-dataset-pill-card">
+          <div class="active-dataset-meta">
+            <span class="active-dataset-label">Active Dataset:</span>
+            <strong class="active-dataset-title" id="activeDatasetTitle">No Dataset Selected</strong>
+            <span class="dataset-rows-count" id="activeDatasetRowsCount">0 Records</span>
+          </div>
+          <button type="button" class="action-btn-outline text-crimson" id="clearCsvBtn" style="display: none;">
+            <span>Reset Dataset</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Executive Financial Insights Summary -->
+      <div class="financial-insights-banner" id="financialInsightsBanner">
+        <div class="insights-badge-row">
+          <span class="star-mark">★</span>
+          <strong>FINANCIAL INTELLIGENCE FINDINGS</strong>
+        </div>
+        <ul class="insights-list" id="insightsList">
+          <li>Upload or select a statement dataset to generate automated executive financial insights.</li>
+        </ul>
+      </div>
+
+      <!-- Global Filter Strip (Affects All Analytics, KPIs, and Tables) -->
+      <div class="analytics-filter-bar" id="analyticsFilterBar">
+        <div class="filter-bar-header">
+          <span class="filter-icon-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
+            <span>FILTER LEDGER</span>
+          </span>
+          <button type="button" class="btn-clear-filters" id="resetFiltersBtn">Reset Filters</button>
+        </div>
+
+        <div class="filter-controls-grid">
+          <!-- Date Range Filter -->
+          <div class="filter-group">
+            <label for="filterDateRange">Date Range</label>
+            <select id="filterDateRange" class="filter-select">
+              <option value="all">All Time</option>
+              <option value="today">Today</option>
+              <option value="this_week">This Week</option>
+              <option value="this_month">This Month</option>
+              <option value="last_month">Last Month</option>
+              <option value="this_year">This Year</option>
+            </select>
+          </div>
+
+          <!-- Cash Flow Direction -->
+          <div class="filter-group">
+            <label for="filterFlowDirection">Cash Flow</label>
+            <select id="filterFlowDirection" class="filter-select">
+              <option value="all">All Flows</option>
+              <option value="inflow">Inflow (Jama)</option>
+              <option value="outflow">Outflow (Kharcha)</option>
+            </select>
+          </div>
+
+          <!-- Transaction Type -->
+          <div class="filter-group">
+            <label for="filterTxnType">Transaction Type</label>
+            <select id="filterTxnType" class="filter-select">
+              <option value="all">All Types</option>
+              <option value="PAYMENT">Payment</option>
+              <option value="RECEIPT">Receipt</option>
+              <option value="EXPENSE">Expense</option>
+              <option value="LOAN_GIVEN">Loan Given</option>
+              <option value="LOAN_RECEIVED">Loan Received</option>
+              <option value="LOAN_REPAYMENT">Loan Repayment</option>
+            </select>
+          </div>
+
+          <!-- Category -->
+          <div class="filter-group">
+            <label for="filterCategory">Category</label>
+            <select id="filterCategory" class="filter-select">
+              <option value="all">All Categories</option>
+              <option value="Retail">Retail</option>
+              <option value="Wholesale">Wholesale</option>
+              <option value="Supplies">Supplies</option>
+              <option value="Commercial">Commercial</option>
+              <option value="Loan Ledger">Loan Ledger</option>
+            </select>
+          </div>
+
+          <!-- Payment Rail (UPI / NEFT / IMPS / ATM) -->
+          <div class="filter-group">
+            <label for="filterPaymentRail">Payment Rail</label>
+            <select id="filterPaymentRail" class="filter-select">
+              <option value="all">All Rails</option>
+              <option value="UPI">UPI Only (Google Pay / PhonePe)</option>
+              <option value="NEFT">NEFT Bank Transfer</option>
+              <option value="IMPS">IMPS Instant</option>
+              <option value="ATM">ATM Cash</option>
+            </select>
+          </div>
+
+          <!-- Search Customer or Ref -->
+          <div class="filter-group search-group">
+            <label for="filterSearchInput">Search Customer / Ref</label>
+            <div class="filter-search-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="filterSearchInput" placeholder="Filter by name, UTR, or memo...">
+            </div>
+          </div>
+
+          <!-- Data Source (CSV / Bank AA) -->
+          <div class="filter-group">
+            <label for="filterSource">Data Source</label>
+            <select id="filterSource" class="filter-select">
+              <option value="all">All Sources</option>
+              <option value="CSV">CSV Import</option>
+              <option value="BANK_AA">Bank (AA)</option>
+            </select>
+          </div>
+
+          <!-- Merchant Filter -->
+          <div class="filter-group search-group">
+            <label for="filterMerchant">Merchant</label>
+            <div class="filter-search-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="15" rx="2" ry="2"/>
+                <polyline points="17 2 12 7 7 2"/>
+              </svg>
+              <input type="text" id="filterMerchant" placeholder="Filter by merchant name...">
+            </div>
+          </div>
+
+          <!-- Amount Range -->
+          <div class="filter-group">
+            <label>Amount Range (₹)</label>
+            <div class="filter-amount-range">
+              <input type="number" id="filterAmountMin" class="filter-input-sm" placeholder="Min" min="0" step="100">
+              <span class="range-divider">—</span>
+              <input type="number" id="filterAmountMax" class="filter-input-sm" placeholder="Max" min="0" step="100">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRIMARY 8 FINANCIAL KPI CARDS -->
+      <div class="financial-kpi-grid">
+        
+        <!-- 1. Total Cash Inflow -->
+        <div class="kpi-card kpi-inflow">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap in-arrow">↑</span>
+            <span class="kpi-title">TOTAL CASH INFLOW</span>
+          </div>
+          <div class="kpi-number-row text-jama">
+            <span class="curr-symbol">₹</span>
+            <span class="kpi-value" id="kpiTotalInflow">0.00</span>
+          </div>
+          <span class="kpi-caption" id="kpiInflowCount">0 settlements received</span>
+        </div>
+
+        <!-- 2. Total Cash Outflow -->
+        <div class="kpi-card kpi-outflow">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap out-arrow">↓</span>
+            <span class="kpi-title">TOTAL CASH OUTFLOW</span>
+          </div>
+          <div class="kpi-number-row text-crimson">
+            <span class="curr-symbol">₹</span>
+            <span class="kpi-value" id="kpiTotalOutflow">0.00</span>
+          </div>
+          <span class="kpi-caption" id="kpiOutflowCount">0 payouts disbursed</span>
+        </div>
+
+        <!-- 3. Net Cash Flow -->
+        <div class="kpi-card kpi-net">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap net-balance">⚖</span>
+            <span class="kpi-title">NET CASH FLOW</span>
+          </div>
+          <div class="kpi-number-row" id="kpiNetBalanceColor">
+            <span class="curr-symbol">₹</span>
+            <span class="kpi-value" id="kpiNetCashFlow">0.00</span>
+          </div>
+          <span class="kpi-caption">Inflow minus Outflow</span>
+        </div>
+
+        <!-- 4. Total Transactions -->
+        <div class="kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap">#</span>
+            <span class="kpi-title">TOTAL TRANSACTIONS</span>
+          </div>
+          <div class="kpi-number-row">
+            <span class="kpi-value" id="kpiTotalTransactions">0</span>
+          </div>
+          <span class="kpi-caption">Verified ledger records</span>
+        </div>
+
+        <!-- 5. Unique Customers -->
+        <div class="kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap">👥</span>
+            <span class="kpi-title">UNIQUE CUSTOMERS</span>
+          </div>
+          <div class="kpi-number-row">
+            <span class="kpi-value" id="kpiUniqueCustomers">0</span>
+          </div>
+          <span class="kpi-caption">Distinct counterparties</span>
+        </div>
+
+        <!-- 6. Repeated Customers -->
+        <div class="kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap">★</span>
+            <span class="kpi-title">REPEATED CUSTOMERS</span>
+          </div>
+          <div class="kpi-number-row text-jama">
+            <span class="kpi-value" id="kpiRepeatedCustomers">0</span>
+          </div>
+          <span class="kpi-caption">Customers with &gt;1 orders</span>
+        </div>
+
+        <!-- 7. Highest Paid Customer -->
+        <div class="kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap">👑</span>
+            <span class="kpi-title">HIGHEST-PAID CUSTOMER</span>
+          </div>
+          <div class="kpi-number-row">
+            <span class="kpi-value-text" id="kpiHighestPaidCustomer">None</span>
+          </div>
+          <span class="kpi-caption" id="kpiHighestPaidAmount">₹0.00 total volume</span>
+        </div>
+
+        <!-- 8. Outstanding Loans -->
+        <div class="kpi-card kpi-loans">
+          <div class="kpi-card-header">
+            <span class="kpi-icon-wrap">📋</span>
+            <span class="kpi-title">OUTSTANDING LOANS</span>
+          </div>
+          <div class="kpi-number-row text-crimson">
+            <span class="curr-symbol">₹</span>
+            <span class="kpi-value" id="kpiOutstandingLoans">0.00</span>
+          </div>
+          <span class="kpi-caption" id="kpiLoansCaption">Active credit balance</span>
+        </div>
+
+      </div>
+
+      <!-- AUTOMATED UPI TRANSACTION ANALYTICS (AA STREAM) -->
+      <div class="upi-analytics-panel" id="upiAnalyticsPanel">
+        <div class="upi-panel-header">
+          <div class="upi-title-wrap">
+            <div class="section-badge-overline">
+              <span class="overline-dot upi-dot"></span>
+              <span>AUTOMATED UPI INTELLIGENCE (ACCOUNT AGGREGATOR)</span>
+            </div>
+            <h3 class="upi-panel-title">UPI Spending, Merchants &amp; Payment Velocity</h3>
+          </div>
+          <div class="upi-mode-pill-tag">
+            <span>NPCI Unified Payments Interface</span>
+          </div>
+        </div>
+
+        <div class="upi-kpi-row">
+          <!-- Total UPI Spend -->
+          <div class="upi-kpi-card">
+            <span class="upi-card-label">TOTAL UPI SPEND</span>
+            <div class="upi-card-val text-crimson">
+              <span class="curr-symbol">₹</span>
+              <span id="upiTotalSpendVal">0.00</span>
+            </div>
+            <span class="upi-card-sub" id="upiPaymentCountVal">0 outgoing payments</span>
+          </div>
+
+          <!-- Total UPI Inflow -->
+          <div class="upi-kpi-card">
+            <span class="upi-card-label">TOTAL UPI RECEIPTS</span>
+            <div class="upi-card-val text-jama">
+              <span class="curr-symbol">₹</span>
+              <span id="upiTotalInflowVal">0.00</span>
+            </div>
+            <span class="upi-card-sub" id="upiReceiptCountVal">0 incoming receipts</span>
+          </div>
+
+          <!-- Average UPI Payment -->
+          <div class="upi-kpi-card">
+            <span class="upi-card-label">AVG UPI PAYMENT</span>
+            <div class="upi-card-val">
+              <span class="curr-symbol">₹</span>
+              <span id="upiAveragePaymentVal">0.00</span>
+            </div>
+            <span class="upi-card-sub" id="upiNetFlowVal">Net: ₹0.00</span>
+          </div>
+
+          <!-- Highest UPI Payment -->
+          <div class="upi-kpi-card">
+            <span class="upi-card-label">HIGHEST SINGLE UPI PAYMENT</span>
+            <div class="upi-card-val text-crimson">
+              <span class="curr-symbol">₹</span>
+              <span id="upiHighestPaymentVal">0.00</span>
+            </div>
+            <span class="upi-card-sub" id="upiHighestMerchantVal">To: None</span>
+          </div>
+        </div>
+
+        <!-- UPI Merchants & Categories Breakdown -->
+        <div class="upi-intelligence-grid">
+          <div class="upi-intel-card">
+            <div class="intel-card-header">
+              <span class="intel-title">Top UPI Counterparties &amp; Merchants</span>
+              <span class="intel-caption">Extracted from VPA handles &amp; narrations</span>
+            </div>
+            <div class="upi-merchant-list" id="upiMerchantList">
+              <div class="upi-empty-state">No UPI merchant data synced yet. Connect bank account to stream live data.</div>
+            </div>
+          </div>
+
+          <div class="upi-intel-card">
+            <div class="intel-card-header">
+              <span class="intel-title">UPI Spending by Category</span>
+              <span class="intel-caption">Food, Groceries, Shopping, Fuel, Utilities</span>
+            </div>
+            <div class="upi-category-list" id="upiCategoryList">
+              <div class="upi-empty-state">No categorized UPI records available.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CASH FLOW OVER TIME & LARGEST TRANSACTIONS -->
+      <div class="cashflow-analytics-block">
+        <div class="block-header-flex">
+          <div>
+            <h3 class="block-main-title">Cash Flow Trends Over Time</h3>
+            <p class="block-sub-title">Temporal distribution of incoming and outgoing capital</p>
+          </div>
+          <div class="granularity-toggle-group">
+            <button type="button" class="granularity-btn" data-granularity="daily">Daily</button>
+            <button type="button" class="granularity-btn" data-granularity="weekly">Weekly</button>
+            <button type="button" class="granularity-btn active" data-granularity="monthly">Monthly</button>
+            <button type="button" class="granularity-btn" data-granularity="yearly">Yearly</button>
+          </div>
+        </div>
+
+        <!-- SVG Cashflow Chart -->
+        <div class="flow-chart-viewport" style="margin: 1rem 0;">
+          <svg class="flow-svg-chart" id="analyticsSvgChart" viewBox="0 0 760 180" preserveAspectRatio="none" aria-label="Cashflow Bar Chart"></svg>
+        </div>
+
+        <!-- Largest Transactions Highlights -->
+        <div class="largest-txns-grid">
+          <div class="largest-card largest-inflow">
+            <div class="largest-badge">LARGEST INFLOW SETTLEMENT</div>
+            <div class="largest-amount text-jama" id="largestInflowAmount">₹0.00</div>
+            <div class="largest-meta">
+              <strong id="largestInflowCustomer">None</strong>
+              <span id="largestInflowDate">Date: -</span>
+            </div>
+          </div>
+          <div class="largest-card largest-outflow">
+            <div class="largest-badge">LARGEST OUTFLOW DISBURSEMENT</div>
+            <div class="largest-amount text-crimson" id="largestOutflowAmount">₹0.00</div>
+            <div class="largest-meta">
+              <strong id="largestOutflowCustomer">None</strong>
+              <span id="largestOutflowDate">Date: -</span>
+            </div>
+          </div>
+          <div class="largest-card largest-avg">
+            <div class="largest-badge">AVERAGE TRANSACTION VALUE</div>
+            <div class="largest-amount" id="avgTransactionAmount">₹0.00</div>
+            <div class="largest-meta">
+              <span>Across all valid ledger entries</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOMER ANALYTICS & REPEAT PAYER DIRECTORY -->
+      <div class="customer-analytics-block">
+        <div class="block-header-flex">
+          <div>
+            <h3 class="block-main-title">Customer Analytics &amp; Repeat Behavior</h3>
+            <p class="block-sub-title">Ranked top counterparties by volume, frequency, and repeat transacting status</p>
+          </div>
+        </div>
+
+        <div class="customer-tables-split">
+          <!-- Top Customers by Total Spend -->
+          <div class="customer-rank-table-wrap">
+            <h4 class="table-sub-heading">Top Spenders by Volume</h4>
+            <table class="inventory-data-table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th class="text-right">Total Inflow</th>
+                  <th class="text-right">Orders</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="topSpendersTableBody">
+                <tr><td colspan="4" style="text-align: center; padding: 1.5rem;">No customer records yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Most Frequent Customers -->
+          <div class="customer-rank-table-wrap">
+            <h4 class="table-sub-heading">Most Frequent Transactors</h4>
+            <table class="inventory-data-table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th class="text-right">Txn Count</th>
+                  <th class="text-right">Net Value</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="mostFrequentTableBody">
+                <tr><td colspan="4" style="text-align: center; padding: 1.5rem;">No customer records yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOAN MANAGEMENT & LOAN STATEMENT SECTION -->
+      <div class="loans-management-block">
+        <div class="block-header-flex">
+          <div>
+            <h3 class="block-main-title">Loan Management &amp; Credit Ledger</h3>
+            <p class="block-sub-title">Comprehensive tracking of loans given, loans received, repayments, and outstanding balances</p>
+          </div>
+          <div class="loan-actions-pills-wrap" style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <div class="loan-summary-pills">
+              <span class="loan-pill">Given: <strong id="loanTotalGiven">₹0.00</strong></span>
+              <span class="loan-pill">Repaid: <strong class="text-jama" id="loanTotalRepaid">₹0.00</strong></span>
+              <span class="loan-pill">Outstanding: <strong class="text-crimson" id="loanTotalOutstanding">₹0.00</strong></span>
+            </div>
+            <div class="loan-action-buttons" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button type="button" class="btn-connect-primary" id="btnOpenIssueCreditModal" style="padding: 0.45rem 0.9rem; font-size: 0.82rem; margin: 0;">
+                <span>+ Issue Udhar</span>
+              </button>
+              <button type="button" class="action-btn-outline" id="btnOpenRepayModal" style="padding: 0.45rem 0.9rem; font-size: 0.82rem;">
+                <span>Record Repayment</span>
+              </button>
+              <button type="button" class="action-btn-outline" id="btnOpenCollectPaymentModal" style="padding: 0.45rem 0.9rem; font-size: 0.82rem;">
+                <span>💳 Collect Online</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="loans-table-wrap" id="loansTableContainer">
+          <table class="inventory-data-table">
+            <thead>
+              <tr>
+                <th>Loan ID</th>
+                <th>Party / Customer</th>
+                <th>Sanction Date</th>
+                <th class="text-right">Original Amount (₹)</th>
+                <th class="text-right">Total Repaid (₹)</th>
+                <th class="text-right">Outstanding (₹)</th>
+                <th>Last Payment</th>
+                <th>Status</th>
+                <th>Statement</th>
+              </tr>
+            </thead>
+            <tbody id="loansTableBody">
+              <tr>
+                <td colspan="9" style="text-align: center; padding: 2rem; color: var(--ink-secondary);">
+                  No loan-related information detected in this dataset.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TRANSACTION EXPLORER -->
+      <div class="transaction-explorer-block">
+        <div class="records-header-row">
+          <div>
+            <h3 class="records-title">Transaction Explorer</h3>
+            <p class="records-desc">Searchable, paginated financial ledger covering every normalized transaction</p>
+          </div>
+          <div class="records-controls">
+            <button type="button" class="action-btn-outline" id="exportExplorerCsvBtn" title="Export filtered transactions to CSV">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Export Filtered CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="records-table-wrap">
+          <table class="provider-records-table" id="transactionExplorerTable">
+            <thead>
+              <tr>
+                <th>Date &amp; Time</th>
+                <th>Reference / ID</th>
+                <th>Customer / Party</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Flow</th>
+                <th class="text-right">Amount (₹)</th>
+                <th>Method</th>
+                <th>Category</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="explorerTableBody">
+              <tr>
+                <td colspan="10" style="text-align: center; padding: 2.5rem; color: var(--ink-secondary);">
+                  Awaiting statement upload. Select or drag a CSV file to populate the transaction explorer.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Bar -->
+        <div class="explorer-pagination-bar">
+          <span class="pagination-info" id="paginationInfo">Showing 0 of 0 transactions</span>
+          <div class="pagination-buttons">
+            <button type="button" class="btn-page-nav" id="btnPagePrev" disabled>&larr; Previous</button>
+            <span class="page-number-display" id="pageNumberDisplay">Page 1 of 1</span>
+            <button type="button" class="btn-page-nav" id="btnPageNext" disabled>Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    </div> <!-- /connectedDataStage -->
+
+  </main>
+
+  <!-- Elevated Modal 1: Multilingual Voice Data AI Assistant Modal -->
+  <div class="modal-backdrop" id="voiceModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog voice-assistant-dialog" role="dialog" aria-modal="true" aria-labelledby="voiceModalTitle">
+      
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="recording-pulse" id="voicePulseIndicator"></span>
+          <span id="voiceModalStatus">Voice Assistant Ready</span>
+          <span class="modal-ai-engine-pill" id="modalAiEnginePill">Ollama LLM</span>
+        </div>
+        <button class="modal-close-btn" id="voiceModalCloseBtn" aria-label="Close voice assistant">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="voice-modal-body">
+        
+        <!-- Language Switcher Bar inside Modal -->
+        <div class="modal-lang-strip">
+          <span class="modal-lang-lbl">Language:</span>
+          <div class="modal-lang-pills" id="modalLangPills" role="radiogroup">
+            <button type="button" class="modal-lang-btn active" data-lang="auto">Auto Detect</button>
+            <button type="button" class="modal-lang-btn" data-lang="te-IN">తెలుగు (Telugu)</button>
+            <button type="button" class="modal-lang-btn" data-lang="hi-IN">हिंदी (Hindi)</button>
+            <button type="button" class="modal-lang-btn" data-lang="en-IN">English</button>
+          </div>
+        </div>
+
+        <!-- Live Waveform Visualizer Canvas -->
+        <div class="waveform-stage">
+          <canvas id="waveformCanvas" width="480" height="120" class="waveform-canvas"></canvas>
+          <div class="mic-orbit-button" id="micToggleBtn" role="button" tabindex="0" aria-label="Toggle microphone">
+            <svg class="mic-svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="22"/>
+              <line x1="8" y1="22" x2="16" y2="22"/>
+            </svg>
+          </div>
+        </div>
+
+        <h3 class="voice-instruction-title" id="voiceInstruction">Press the mic and speak naturally</h3>
+        <p class="voice-speech-transcript" id="speechTranscript">"..."</p>
+
+        <!-- Dual Text Input Inside Modal -->
+        <div class="modal-ai-input-strip">
+          <input type="text" id="modalAiTextInput" class="modal-ai-input" placeholder="Or type question in Telugu, Hindi or English..." autocomplete="off" />
+          <button type="button" class="btn-modal-ai-send" id="btnModalAiSend">Ask</button>
+        </div>
+
+        <!-- AI Assistant Answer Card inside Modal -->
+        <div class="modal-ai-answer-card" id="modalAiAnswerCard" style="display: none;">
+          <div class="modal-ai-card-header">
+            <div class="modal-ai-header-left">
+              <span class="ai-status-orb active" id="modalAiStatusOrb"></span>
+              <strong id="modalAiCardTitle">Hisab AI Answer</strong>
+              <span class="ai-lang-pill" id="modalAiResponseLang">Telugu</span>
+            </div>
+            <button type="button" class="btn-modal-tts-play" id="btnModalTtsPlay" title="Read Aloud">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+              </svg>
+              <span id="modalTtsPlayLabel">Speak</span>
+            </button>
+          </div>
+          <div class="modal-ai-card-body">
+            <div class="modal-ai-echo" id="modalAiEcho"></div>
+            <div class="modal-ai-text" id="modalAiText"></div>
+            <div class="modal-ai-pills" id="modalAiPills"></div>
+            <div class="modal-ai-chart-box" id="modalAiChartBox" style="display: none;">
+              <canvas id="modalAiChartCanvas" width="440" height="180"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggested Chips inside Modal -->
+        <div class="modal-prompt-chips" id="modalPromptChips">
+          <span class="modal-chips-lbl">Try asking:</span>
+          <button type="button" class="modal-chip" data-query="Telangana lo ee month total sales entha?">"Telangana lo ee month total sales entha?"</button>
+          <button type="button" class="modal-chip" data-query="Which customer paid the most last month?">"Which customer paid the most?"</button>
+          <button type="button" class="modal-chip" data-query="Hyderabad lo enni customers unnaru?">"Hyderabad lo enni customers unnaru?"</button>
+          <button type="button" class="modal-chip" data-query="Pichhle mahine ka total sales kitna tha?">"Pichhle mahine ka total sales kitna tha?"</button>
+        </div>
+
+        <!-- Language and Voice Options -->
+        <div class="voice-footer-meta">
+          <span>Supported: <strong>Telugu (తెలుగు), Hindi (हिंदी), Indian English, Hinglish</strong></span>
+          <span class="engine-tag" id="modalAiPrivacyTag">100% Local Read-Only Safe</span>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Elevated Modal 2: Download APK Modal -->
+  <div class="modal-backdrop" id="apkModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog apk-dialog" role="dialog" aria-modal="true" aria-labelledby="apkModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span>Android Application Package</span>
+        </div>
+        <button class="modal-close-btn" id="apkModalCloseBtn" aria-label="Close APK download dialog">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="apk-modal-body">
+        <div class="apk-hero-badge">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M4 17l6-6-6-6"/>
+            <path d="M12 19h8"/>
+            <rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1.6"/>
+          </svg>
+        </div>
+
+        <h3 class="apk-title" id="apkModalTitle">Download Hisab APK</h3>
+        <p class="apk-desc">Install the full native Android app for zero-latency offline bookkeeping, daily SMS payment reminders, and WhatsApp receipt sharing.</p>
+        
+        <div class="apk-meta-table">
+          <div class="apk-row">
+            <span>Package Name</span>
+            <code>com.hisab.digital.khatabook</code>
+          </div>
+          <div class="apk-row">
+            <span>Version</span>
+            <strong>v2.4.1 (Stable Build)</strong>
+          </div>
+          <div class="apk-row">
+            <span>File Size</span>
+            <span>18.4 MB</span>
+          </div>
+          <div class="apk-row">
+            <span>SHA-256 Checksum</span>
+            <code class="checksum">8f9b...3c21</code>
+          </div>
+        </div>
+
+        <div class="apk-download-actions">
+          <a href="#download-apk" class="btn-download-trigger" id="downloadApkTriggerBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>Download Hisab.apk</span>
+          </a>
+          <button class="btn-cancel-entry" id="apkCancelBtn">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 3: Login or Register Modal -->
+  <div class="modal-backdrop" id="authModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog auth-dialog" role="dialog" aria-modal="true" aria-labelledby="authModalHeaderTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span id="authModalHeaderTitle">Merchant Account Portal</span>
+        </div>
+        <button class="modal-close-btn" id="authModalCloseBtn" aria-label="Close authentication modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="auth-modal-body">
+        <div class="auth-tabs" id="authTabsHeader">
+          <button type="button" class="auth-tab-btn active" id="tabLoginBtn">Login</button>
+          <button type="button" class="auth-tab-btn" id="tabRegisterBtn">Register Store</button>
+        </div>
+
+        <!-- Section A: Login Form Block -->
+        <div id="loginFormBlock" class="auth-panel">
+          <form class="auth-form" id="loginForm" onsubmit="event.preventDefault(); window.handleLoginSubmit();">
+            <div class="form-field">
+              <label for="loginIdentifier">Mobile Number or Email</label>
+              <div class="input-with-prefix">
+                <span class="phone-prefix">+91</span>
+                <input type="text" id="loginIdentifier" placeholder="98765 43210 or merchant@hisab.in" required class="auth-input">
+              </div>
+            </div>
+
+            <div class="form-field">
+              <div class="field-label-row">
+                <label for="loginPassword">Password</label>
+                <a href="#forgot" class="forgot-link" onclick="event.preventDefault(); window.hisabApp.showToast('Password reset link sent to registered mobile/email.');">Forgot?</a>
+              </div>
+              <div class="input-with-action">
+                <input type="password" id="loginPassword" placeholder="Enter your password" required class="auth-input password-input">
+                <button type="button" class="toggle-password-btn" data-target="loginPassword" aria-label="Toggle password visibility">
+                  <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Captcha Section: I'm not a robot -->
+            <div class="captcha-container">
+              <div class="captcha-box" id="loginCaptchaBox" role="checkbox" aria-checked="false" tabindex="0">
+                <div class="captcha-check-slot">
+                  <span class="captcha-box-square" id="loginCaptchaSquare"></span>
+                  <span class="captcha-spin-ring" id="loginCaptchaSpinner"></span>
+                  <span class="captcha-check-svg" id="loginCaptchaCheckmark">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#206A43" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </span>
+                </div>
+                <span class="captcha-text">I'm not a robot</span>
+                <div class="captcha-secured-badge">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                  <span>Secured by Hisab</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-auth-submit" id="loginSubmitBtn">Login into Hisab</button>
+          </form>
+        </div>
+
+        <!-- Section B: Register Store Form Block -->
+        <div id="registerFormBlock" class="auth-panel" style="display: none;">
+          
+          <!-- Step 1: Merchant Registration Form -->
+          <form class="auth-form" id="registerStep1Form" onsubmit="event.preventDefault(); window.handleRegisterStep1Submit();">
+            <div class="form-field">
+              <label for="regFullName">Full Name</label>
+              <input type="text" id="regFullName" placeholder="e.g. Ramesh Kumar" required class="auth-input">
+            </div>
+
+            <div class="form-field">
+              <label for="regShopName">Shop / Store Name</label>
+              <input type="text" id="regShopName" placeholder="e.g. Kumar General Provision" required class="auth-input">
+            </div>
+
+            <div class="form-field-row">
+              <div class="form-field half">
+                <label for="regPhone">Mobile Number (India)</label>
+                <div class="input-with-prefix">
+                  <span class="phone-prefix">+91</span>
+                  <input type="tel" id="regPhone" pattern="[0-9]{10}" placeholder="98765 43210" required class="auth-input">
+                </div>
+              </div>
+
+              <div class="form-field half">
+                <label for="regEmail">Email Address</label>
+                <input type="email" id="regEmail" placeholder="merchant@store.in" required class="auth-input">
+              </div>
+            </div>
+
+            <!-- Password Blanks Twice for Double Verification -->
+            <div class="form-field-row">
+              <div class="form-field half">
+                <label for="regPassword">Password</label>
+                <div class="input-with-action">
+                  <input type="password" id="regPassword" minlength="6" placeholder="Create password" required class="auth-input password-input">
+                  <button type="button" class="toggle-password-btn" data-target="regPassword" aria-label="Toggle password visibility">
+                    <svg class="eye-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="eye-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-field half">
+                <label for="regConfirmPassword">Confirm Password</label>
+                <div class="input-with-action">
+                  <input type="password" id="regConfirmPassword" minlength="6" placeholder="Re-enter password" required class="auth-input password-input">
+                  <button type="button" class="toggle-password-btn" data-target="regConfirmPassword" aria-label="Toggle password visibility">
+                    <svg class="eye-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="eye-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Captcha Section: I'm not a robot -->
+            <div class="captcha-container">
+              <div class="captcha-box" id="regCaptchaBox" role="checkbox" aria-checked="false" tabindex="0">
+                <div class="captcha-check-slot">
+                  <span class="captcha-box-square" id="regCaptchaSquare"></span>
+                  <span class="captcha-spin-ring" id="regCaptchaSpinner"></span>
+                  <span class="captcha-check-svg" id="regCaptchaCheckmark">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#206A43" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </span>
+                </div>
+                <span class="captcha-text">I'm not a robot</span>
+                <div class="captcha-secured-badge">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                  <span>Secured by Hisab</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-auth-submit" id="regStep1SubmitBtn">Authenticate with OTP</button>
+          </form>
+
+          <!-- Step 2: OTP Authentication Screen -->
+          <div class="otp-stage" id="registerOtpStage" style="display: none;">
+            <div class="otp-header">
+              <div class="otp-shield-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                  <line x1="12" y1="18" x2="12.01" y2="18"/>
+                </svg>
+              </div>
+              <h4 class="otp-title">Enter Verification Code</h4>
+              <p class="otp-subtitle">
+                A 6-digit OTP has been sent to <strong id="displayOtpPhone">+91 98765 43210</strong>
+              </p>
+            </div>
+
+            <form id="otpForm" onsubmit="event.preventDefault(); window.handleOtpVerification();">
+              <div class="otp-digits-row">
+                <input type="text" maxlength="1" class="otp-box" id="otpBox1" inputmode="numeric" required autofocus>
+                <input type="text" maxlength="1" class="otp-box" id="otpBox2" inputmode="numeric" required>
+                <input type="text" maxlength="1" class="otp-box" id="otpBox3" inputmode="numeric" required>
+                <input type="text" maxlength="1" class="otp-box" id="otpBox4" inputmode="numeric" required>
+                <input type="text" maxlength="1" class="otp-box" id="otpBox5" inputmode="numeric" required>
+                <input type="text" maxlength="1" class="otp-box" id="otpBox6" inputmode="numeric" required>
+              </div>
+
+              <div class="otp-demo-pill" id="otpDemoFillBtn" role="button" tabindex="0" title="Click to auto-fill demo OTP">
+                <span>Demo OTP: <strong>482910</strong> (Click to auto-fill)</span>
+              </div>
+
+              <div class="otp-meta-row">
+                <span class="otp-timer-text">Resend OTP in <span id="otpCountdown">28</span>s</span>
+                <button type="button" class="resend-btn" id="otpResendBtn" disabled>Resend Code</button>
+              </div>
+
+              <div class="otp-actions">
+                <button type="submit" class="btn-auth-submit" id="otpVerifyBtn">Verify OTP &amp; Complete Registration</button>
+                <button type="button" class="btn-back-link" id="otpBackBtn">← Edit Store Details</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+        <p class="auth-disclaimer">
+          By continuing, you agree to our 
+          <button type="button" class="inline-link" id="authToSLink">Terms of Service</button> and 
+          <button type="button" class="inline-link" id="authPrivacyLink">Privacy Policy</button>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Elevated Modal 5: Terms of Service (Rule 26) -->
+  <div class="modal-backdrop" id="tosModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog policy-dialog" role="dialog" aria-modal="true" aria-labelledby="tosModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">Legal Document</div>
+        <button class="modal-close-btn" id="tosModalCloseBtn" aria-label="Close Terms of Service">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="policy-body">
+        <h3 id="tosModalTitle" class="policy-title">Terms of Service</h3>
+        <p class="policy-date">Effective: September 2026</p>
+        <div class="policy-text-block">
+          <h4>1. Acceptance of Terms</h4>
+          <p>By accessing or utilizing Hisab ("Application"), whether via the web portal or the installable Android APK, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.</p>
+          <h4>2. Purpose of Hisab</h4>
+          <p>Hisab operates as an encrypted personal and merchant ledger utility designed to replace traditional paper bahi-khatas. The system facilitates vocal and manual ledger calculations, credit/debit tallying, and local data synchronization.</p>
+          <h4>3. User Responsibility &amp; Financial Records</h4>
+          <p>You remain solely responsible for the legal accuracy of entries recorded. Hisab does not act as a banking institution, licensed depository, or payment processing intermediary.</p>
+          <h4>4. Voice Processing</h4>
+          <p>Speech input captured via the Voice Assistant is converted to structured ledger records through local browser synthesis and secured speech APIs. Audio snippets are not retained or monetized for advertising.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 6: Privacy Policy (Rule 27) -->
+  <div class="modal-backdrop" id="privacyModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog policy-dialog" role="dialog" aria-modal="true" aria-labelledby="privacyModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">Data Protection</div>
+        <button class="modal-close-btn" id="privacyModalCloseBtn" aria-label="Close Privacy Policy">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="policy-body">
+        <h3 id="privacyModalTitle" class="policy-title">Privacy Policy</h3>
+        <p class="policy-date">Effective: September 2026</p>
+        <div class="policy-text-block">
+          <h4>1. Information We Collect</h4>
+          <p>We believe financial records belong exclusively to the merchant. Ledger records, customer names, debit/credit tallies, and voice transcripts are preserved directly in your browser's encrypted local client storage.</p>
+          <h4>2. Microphone &amp; Voice Input</h4>
+          <p>Microphone access is requested strictly upon user initiation via the "Voice Chat" button. The live speech stream is converted in real time to text for extracting contact and numeric values, then immediately cleared from transient memory.</p>
+          <h4>3. Zero Sale of Merchant Records</h4>
+          <p>We do not harvest, resell, or distribute merchant ledger transactions, party names, or financial balances to credit agencies or external advertisers.</p>
+          <h4>4. Data Deletion</h4>
+          <p>You can clear all stored ledger information at any time via the "Reset Sample" or browser data purge controls.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 4: Profile Details Data (Accessible via 3-line Menu) -->
+  <div class="modal-backdrop" id="profileModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog profile-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span>Merchant Identity &amp; Settlement</span>
+        </div>
+        <button class="modal-close-btn" id="profileModalCloseBtn" aria-label="Close profile details">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div class="profile-header-card">
+          <div class="profile-big-avatar" id="profileAvatarLetter">G</div>
+          <div class="profile-title-block">
+            <h3 class="profile-store-name" id="profileStoreName">Garg Kirana &amp; General Store</h3>
+            <p class="profile-owner-line">Proprietor: <strong id="profileOwnerName">Ramesh Garg</strong> • <span class="badge-verified-merchant">Verified License</span></p>
+          </div>
+        </div>
+
+        <div class="profile-details-grid">
+          <div class="profile-info-tile">
+            <span class="tile-caption">Registered Phone</span>
+            <strong class="tile-val" id="profilePhone">+91 98765 43210</strong>
+            <span class="tile-status verified">OTP Verified</span>
+          </div>
+          <div class="profile-info-tile">
+            <span class="tile-caption">Official Email</span>
+            <strong class="tile-val" id="profileEmail">ramesh.garg@store.hisab.in</strong>
+            <span class="tile-status verified">Authenticated</span>
+          </div>
+          <div class="profile-info-tile">
+            <span class="tile-caption">GSTIN Registration</span>
+            <strong class="tile-val" id="profileGstin">07AAAAA0000A1Z5</strong>
+            <span class="tile-status active">Active Taxpayer</span>
+          </div>
+          <div class="profile-info-tile">
+            <span class="tile-caption">Business Category</span>
+            <strong class="tile-val">Retail FMCG, Spices &amp; Provisions</strong>
+            <span class="tile-status info">General Trade</span>
+          </div>
+          <div class="profile-info-tile">
+            <span class="tile-caption">Primary Settlement Bank</span>
+            <strong class="tile-val">HDFC Bank Ltd.</strong>
+            <span class="tile-subval">A/C: •••••••••••4821 • IFSC: HDFC0001248</span>
+          </div>
+          <div class="profile-info-tile">
+            <span class="tile-caption">Virtual Payment Address (VPA)</span>
+            <strong class="tile-val">gargkirana@hdfcbank</strong>
+            <span class="tile-subval">NPCI Instant Auto-Settlement</span>
+          </div>
+          <div class="profile-info-tile">
+            <span class="tile-caption">Security Credentials</span>
+            <strong class="tile-val">2FA SMS &amp; Biometric Auth</strong>
+            <span class="tile-status verified">Secure Enclave</span>
+          </div>
+          <div class="profile-info-tile">
+            <span class="tile-caption">Session Status</span>
+            <strong class="tile-val">AES-256 GCM Client Encryption</strong>
+            <span class="tile-subval">Zero Third-Party Telemetry</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 5: Inventory Data (Accessible via 3-line Menu) -->
+  <div class="modal-backdrop" id="inventoryModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog inventory-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="inventoryModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span>Physical Inventory &amp; Stock Ledger</span>
+        </div>
+        <button class="modal-close-btn" id="inventoryModalCloseBtn" aria-label="Close inventory data">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div class="inventory-valuation-strip">
+          <div class="inv-val-item">
+            <span class="inv-label">Total SKUs</span>
+            <strong class="inv-number" id="invTotalSkus">5 Active</strong>
+          </div>
+          <div class="inv-val-item">
+            <span class="inv-label">Stock Valuation (Cost)</span>
+            <strong class="inv-number text-jama" id="invTotalValuation">₹3,84,500</strong>
+          </div>
+          <div class="inv-val-item">
+            <span class="inv-label">Stock Alerts</span>
+            <strong class="inv-number text-crimson" id="invAlertCount">2 Reorder Items</strong>
+          </div>
+        </div>
+
+        <!-- Quick Add SKU Form -->
+        <div class="inventory-add-block">
+          <h4 class="inv-block-title">Quick Add Inventory SKU</h4>
+          <form class="inv-add-form" id="invAddForm">
+            <div class="inv-form-row">
+              <div class="form-group-flex">
+                <label for="invItemName">Item Name</label>
+                <input type="text" id="invItemName" placeholder="e.g. Tata Tea Premium 500g" required>
+              </div>
+              <div class="form-group-flex">
+                <label for="invSkuCode">SKU Code</label>
+                <input type="text" id="invSkuCode" placeholder="SKU-106" required>
+              </div>
+              <div class="form-group-flex">
+                <label for="invCategory">Category</label>
+                <input type="text" id="invCategory" placeholder="Beverages" required>
+              </div>
+            </div>
+            <div class="inv-form-row">
+              <div class="form-group-flex">
+                <label for="invStockQty">Stock Qty</label>
+                <input type="number" id="invStockQty" placeholder="50" min="1" required>
+              </div>
+              <div class="form-group-flex">
+                <label for="invUnitCost">Unit Cost (₹)</label>
+                <input type="number" id="invUnitCost" placeholder="210" min="1" step="0.01" required>
+              </div>
+              <div class="form-group-flex">
+                <label for="invSellingPrice">Selling Price (₹)</label>
+                <input type="number" id="invSellingPrice" placeholder="250" min="1" step="0.01" required>
+              </div>
+              <div class="form-group-flex btn-align-end">
+                <button type="submit" class="btn-add-sku">+ Add SKU</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Inventory List Table -->
+        <div class="inventory-table-wrap">
+          <table class="inventory-data-table">
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Item Description</th>
+                <th>Category</th>
+                <th class="text-right">Stock Level</th>
+                <th class="text-right">Cost Price (₹)</th>
+                <th class="text-right">Retail Price (₹)</th>
+                <th class="text-right">Margin</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 6: Customers Subsection (Dynamically Populated from Payment History & Repeat Payers) -->
+  <div class="modal-backdrop" id="customersModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog customers-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="customersModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span>Dynamic Customers Subsection</span>
+        </div>
+        <button class="modal-close-btn" id="customersModalCloseBtn" aria-label="Close customers view">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div class="customers-meta-strip">
+          <div class="customer-stat-pill">
+            <span>Total Customers:</span>
+            <strong id="modalTotalCustomersCount">18</strong>
+          </div>
+          <div class="customer-stat-pill repeat-accent">
+            <span>★ Repeat Payers Auto-Added:</span>
+            <strong id="modalRepeatCustomersCount">7</strong>
+          </div>
+          <div class="customer-stat-pill">
+            <span>Total Settled Spend:</span>
+            <strong class="text-jama" id="modalCustomersTotalSpend">₹2,46,000</strong>
+          </div>
+        </div>
+
+        <!-- Automatic Repeat Payer Promotion Alert -->
+        <div class="repeat-payers-alert-strip" style="margin-bottom: 1.25rem;">
+          <div class="alert-icon-ring">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="alert-text-body">
+            <strong>Automatic Repeat Payer Promotion:</strong>
+            <span id="repeatPayerSummaryText">7 Repeat Payers currently identified with 2 or more settlements. All are automatically tracked with lifetime spend in this Customers subsection.</span>
+          </div>
+        </div>
+
+        <!-- Highest Paying Customers Ranked Grid inside Customers Subsection -->
+        <div class="modal-sub-block" style="margin-bottom: 1.5rem;">
+          <h4 style="font-family: var(--font-display, Georgia, serif); font-size: 1.05rem; font-weight: 700; color: var(--ink-primary); margin-bottom: 0.75rem;">Highest Paying Customers</h4>
+          <div class="top-payers-grid" id="topPayersGrid">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </div>
+
+        <div class="customers-search-filter-row">
+          <div class="search-input-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="customersSearchInput" placeholder="Search customer name or phone..." aria-label="Search customers">
+          </div>
+          <div class="customer-filter-tabs">
+            <button type="button" class="cust-filter-chip active" data-filter="all">All Customers (<span id="allCustFilterCount">18</span>)</button>
+            <button type="button" class="cust-filter-chip" data-filter="repeat">Repeat Payers (★ <span id="repeatCustFilterCount">7</span>)</button>
+            <button type="button" class="cust-filter-chip" data-filter="high-value">Top Volume (₹10,000+)</button>
+          </div>
+          <button type="button" class="btn-connect-primary" id="btnOpenAddCustomerModal" style="padding: 0.45rem 0.9rem; font-size: 0.82rem; margin: 0; white-space: nowrap;">
+            <span>+ Add Customer</span>
+          </button>
+        </div>
+
+        <!-- Dynamic Customers Table -->
+        <div class="customers-table-wrap">
+          <table class="customers-data-table">
+            <thead>
+              <tr>
+                <th>Customer / Account</th>
+                <th>Relationship Status</th>
+                <th class="text-right">Total Settled (₹)</th>
+                <th class="text-right">Transactions</th>
+                <th>Preferred Provider</th>
+                <th>Last Active</th>
+              </tr>
+            </thead>
+            <tbody id="customersTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 7: Payment Providers Modal (Accessible via 3-line Menu) -->
+  <div class="modal-backdrop" id="providersModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog providers-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="providersModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span>Payment Providers &amp; Settlement Rails</span>
+        </div>
+        <button class="modal-close-btn" id="providersModalCloseBtn" aria-label="Close payment providers">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <p class="providers-intro">
+          Connected payment networks, acquirers, and settlement rails feeding real-time transaction data into Hisab:
+        </p>
+
+        <div class="providers-grid">
+          <div class="provider-rail-card">
+            <div class="rail-card-top">
+              <span class="rail-badge active">Active • Live Sync</span>
+              <span class="rail-speed">Latency: 120ms</span>
+            </div>
+            <h4 class="rail-name">NPCI UPI Stack (QR &amp; Auto-Pay)</h4>
+            <p class="rail-desc">BHIM, PhonePe, Google Pay, Paytm UPI settlements with instant credit alerts.</p>
+            <div class="rail-meta">
+              <span>Settlement: <strong>Instant (T+0)</strong></span>
+              <span>MDR Fee: <strong>0.00%</strong></span>
+            </div>
+            <button type="button" class="btn-connect-rail" data-provider-name="NPCI UPI Stack">
+              <span>Connect &amp; Sync UPI Rail →</span>
+            </button>
+          </div>
+
+          <div class="provider-rail-card">
+            <div class="rail-card-top">
+              <span class="rail-badge active">Active • Connected</span>
+              <span class="rail-speed">Latency: 180ms</span>
+            </div>
+            <h4 class="rail-name">PineLabs &amp; Innoviti PoS Machines</h4>
+            <p class="rail-desc">Physical card terminal swipes (Visa, Mastercard, RuPay, Sodexo) across store counters.</p>
+            <div class="rail-meta">
+              <span>Settlement: <strong>Daily Batch (23:00)</strong></span>
+              <span>RuPay MDR: <strong>0.00%</strong></span>
+            </div>
+            <button type="button" class="btn-connect-rail" data-provider-name="PineLabs PoS Machines">
+              <span>Connect &amp; Sync PoS Rail →</span>
+            </button>
+          </div>
+
+          <div class="provider-rail-card">
+            <div class="rail-card-top">
+              <span class="rail-badge active">Active • Webhook Verified</span>
+              <span class="rail-speed">Latency: 95ms</span>
+            </div>
+            <h4 class="rail-name">Razorpay Gateway Rail</h4>
+            <p class="rail-desc">Online payment links, web checkout invoices, and digital billing settlements.</p>
+            <div class="rail-meta">
+              <span>Settlement: <strong>T+1 Rolling</strong></span>
+              <span>Status: <strong>Operational</strong></span>
+            </div>
+            <button type="button" class="btn-connect-rail" data-provider-name="Razorpay Gateway">
+              <span>Connect &amp; Sync Razorpay →</span>
+            </button>
+          </div>
+
+          <div class="provider-rail-card">
+            <div class="rail-card-top">
+              <span class="rail-badge active">Direct Core Rail</span>
+              <span class="rail-speed">Status: Verified</span>
+            </div>
+            <h4 class="rail-name">HDFC Bank Direct NEFT / RTGS</h4>
+            <p class="rail-desc">Primary merchant current account ending in ••4821 for vendor disbursements and wholesale payouts.</p>
+            <div class="rail-meta">
+              <span>Settlement: <strong>Direct Clearing</strong></span>
+              <span>IFSC: <strong>HDFC0001248</strong></span>
+            </div>
+            <button type="button" class="btn-connect-rail" data-provider-name="HDFC Bank Core Rail">
+              <span>Connect &amp; Sync Bank Core →</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 8: Column Mapping Review Modal -->
+  <div class="modal-backdrop" id="csvMappingModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog mapping-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="mappingModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span id="mappingModalTitle">CSV Column Detection &amp; Mapping Review</span>
+        </div>
+        <button class="modal-close-btn" id="mappingModalCloseBtn" aria-label="Close mapping view">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <p class="mapping-intro">
+          Hisab has automatically detected the columns in your statement. Review the mappings below to ensure correct financial classification before finalizing data import:
+        </p>
+
+        <!-- Mapping Configuration Grid -->
+        <div class="mapping-config-grid" id="mappingConfigGrid">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Sample Rows Preview Table -->
+        <div class="mapping-preview-wrap">
+          <h4 class="mapping-preview-title">Detected CSV Raw Sample Preview (First 3 Rows)</h4>
+          <div class="mapping-table-scroll">
+            <table class="inventory-data-table" id="mappingPreviewTable">
+              <thead id="mappingPreviewThead"></thead>
+              <tbody id="mappingPreviewTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-footer-actions">
+          <button type="button" class="btn-cancel-action" id="btnCancelMapping">Cancel</button>
+          <button type="button" class="btn-confirm-import" id="btnConfirmMappingAndImport">
+            <span>Proceed to Quality Audit &rarr;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 9: Data Quality Report Modal -->
+  <div class="modal-backdrop" id="dataQualityModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog quality-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="qualityModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span id="qualityModalTitle">Pre-Import Data Quality Audit Report</span>
+        </div>
+        <button class="modal-close-btn" id="qualityModalCloseBtn" aria-label="Close quality report">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div class="quality-score-hero">
+          <div class="score-circle">
+            <strong id="qualityAccuracyScore">100%</strong>
+            <span>Clean Data</span>
+          </div>
+          <div class="quality-summary-meta">
+            <h4 class="quality-dataset-name" id="qualityDatasetName">Merchant Statement</h4>
+            <p id="qualitySummaryDesc">All records have been parsed, validated, and tested against financial reconciliation rules.</p>
+          </div>
+        </div>
+
+        <!-- Quality Metrics Grid -->
+        <div class="quality-metrics-grid">
+          <div class="quality-metric-item">
+            <span class="q-label">Total Rows Scanned</span>
+            <strong class="q-val" id="qTotalRows">0</strong>
+          </div>
+          <div class="quality-metric-item text-jama">
+            <span class="q-label">Valid Importable Records</span>
+            <strong class="q-val" id="qValidRows">0</strong>
+          </div>
+          <div class="quality-metric-item text-crimson">
+            <span class="q-label">Invalid / Skipped Rows</span>
+            <strong class="q-val" id="qInvalidRows">0</strong>
+          </div>
+          <div class="quality-metric-item text-brass">
+            <span class="q-label">Duplicate Signatures Detected</span>
+            <strong class="q-val" id="qDuplicateRows">0</strong>
+          </div>
+          <div class="quality-metric-item">
+            <span class="q-label">Missing Customer Names</span>
+            <strong class="q-val" id="qMissingCustomers">0</strong>
+          </div>
+          <div class="quality-metric-item">
+            <span class="q-label">Missing Monetary Amounts</span>
+            <strong class="q-val" id="qMissingAmounts">0</strong>
+          </div>
+        </div>
+
+        <div class="quality-note-callout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <p>
+            Zero financial records are silently deleted. Records with duplicates are tagged in the ledger, and missing party names are assigned traceable placeholder IDs.
+          </p>
+        </div>
+
+        <div class="modal-footer-actions">
+          <button type="button" class="btn-cancel-action" id="btnCancelQualityImport">Cancel</button>
+          <button type="button" class="btn-confirm-import" id="btnFinalizeImport">
+            <span>Commit to SQLite &amp; View Analytics &rarr;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 10: Customer Lifetime Activity & Transaction History Modal -->
+  <div class="modal-backdrop" id="customerDetailModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog customer-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="customerDetailTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span id="customerDetailTitle">Customer Statement &amp; Lifetime Activity</span>
+        </div>
+        <button class="modal-close-btn" id="customerDetailCloseBtn" aria-label="Close customer detail">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div class="customer-hero-strip">
+          <div>
+            <h3 class="customer-hero-name" id="cdName">Customer Name</h3>
+            <span class="customer-hero-id" id="cdId">CUST-1001</span>
+          </div>
+          <div class="customer-quick-badges">
+            <span class="repeat-status-tag repeat-active" id="cdRepeatBadge">★ Repeat Customer</span>
+            <span class="setup-tag" id="cdMethodBadge">UPI / QR</span>
+          </div>
+        </div>
+
+        <div class="customer-kpi-row">
+          <div class="cd-kpi">
+            <span>Total Orders / Txns</span>
+            <strong id="cdTotalTxns">0</strong>
+          </div>
+          <div class="cd-kpi text-jama">
+            <span>Total Inflow (Paid In)</span>
+            <strong id="cdTotalInflow">₹0.00</strong>
+          </div>
+          <div class="cd-kpi text-crimson">
+            <span>Total Outflow (Disbursed)</span>
+            <strong id="cdTotalOutflow">₹0.00</strong>
+          </div>
+          <div class="cd-kpi">
+            <span>Net Contribution</span>
+            <strong id="cdNetContrib">₹0.00</strong>
+          </div>
+        </div>
+
+        <h4 class="sub-block-title">Complete Transaction History</h4>
+        <div class="records-table-wrap">
+          <table class="inventory-data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Reference</th>
+                <th>Description</th>
+                <th>Flow</th>
+                <th class="text-right">Amount (₹)</th>
+                <th>Method</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="cdTransactionsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 11: Loan Statement Modal -->
+  <div class="modal-backdrop" id="loanStatementModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog loan-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="loanStatementTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span id="loanStatementTitle">Credit Facility &amp; Loan Statement</span>
+        </div>
+        <button class="modal-close-btn" id="loanStatementCloseBtn" aria-label="Close loan statement">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable printable-statement" id="loanPrintableArea">
+        <div class="statement-hero-header">
+          <div>
+            <span class="statement-type-tag">CREDIT STATEMENT</span>
+            <h3 class="statement-cust-name" id="lsCustomerName">Party Name</h3>
+            <span class="statement-loan-id" id="lsLoanId">LN-1001</span>
+          </div>
+          <div class="statement-status-wrap">
+            <span class="stock-status-pill instock" id="lsStatusPill">ACTIVE</span>
+            <button type="button" class="btn-print-statement" id="btnPrintLoanStatement">Print / Download</button>
+          </div>
+        </div>
+
+        <div class="statement-figures-grid">
+          <div class="st-fig">
+            <span>Original Sanctioned Loan</span>
+            <strong id="lsOriginalAmount">₹0.00</strong>
+            <span class="st-sub" id="lsSanctionDate">Date: -</span>
+          </div>
+          <div class="st-fig text-jama">
+            <span>Total Amount Repaid</span>
+            <strong id="lsTotalRepaid">₹0.00</strong>
+            <span class="st-sub" id="lsRepaymentCount">0 installments</span>
+          </div>
+          <div class="st-fig text-crimson">
+            <span>Current Outstanding Balance</span>
+            <strong id="lsOutstandingBalance">₹0.00</strong>
+            <span class="st-sub">Formula: Loan - Repayments</span>
+          </div>
+        </div>
+
+        <h4 class="sub-block-title">Repayment Installment Timeline</h4>
+        <div class="records-table-wrap">
+          <table class="inventory-data-table">
+            <thead>
+              <tr>
+                <th>Repayment Date</th>
+                <th>Reference / UTR</th>
+                <th class="text-right">Repayment Amount (₹)</th>
+                <th>Verification</th>
+              </tr>
+            </thead>
+            <tbody id="lsRepaymentsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 12: Dataset Management Modal -->
+  <div class="modal-backdrop" id="datasetsModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog datasets-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="datasetsModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span id="datasetsModalTitle">Uploaded Datasets &amp; Historical Statements</span>
+        </div>
+        <button class="modal-close-btn" id="datasetsModalCloseBtn" aria-label="Close datasets manager">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div class="datasets-table-wrap">
+          <table class="inventory-data-table">
+            <thead>
+              <tr>
+                <th>Dataset Name</th>
+                <th>Uploaded Date</th>
+                <th>Date Range</th>
+                <th class="text-right">Records</th>
+                <th class="text-right">Total Inflow (₹)</th>
+                <th class="text-right">Total Outflow (₹)</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="datasetsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 13: Bank Account Connection & AA Consent Modal -->
+  <div class="modal-backdrop" id="bankConnectModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog bank-connect-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="bankModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span id="bankModalTitle">Link Bank Account via Account Aggregator</span>
+        </div>
+        <button class="modal-close-btn" id="bankModalCloseBtn" aria-label="Close bank connection">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <!-- RBI Regulatory & Privacy Shield Banner -->
+        <div class="aa-security-card">
+          <div class="aa-shield-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <strong>RBI REGULATED ACCOUNT AGGREGATOR FRAMEWORK</strong>
+          </div>
+          <p class="aa-shield-text">
+            Hisab <strong>never</strong> asks for your netbanking passwords, debit card ATM PINs, UPI PINs, or SMS OTPs. Data retrieval is 100% consent-based, encrypted end-to-end, and revocable anytime from this portal.
+          </p>
+        </div>
+
+        <!-- Step 1: Bank Selection Grid -->
+        <div class="bank-selection-section">
+          <label class="bank-section-label">Select Your Bank</label>
+          <div class="bank-grid" id="bankSelectionGrid">
+            <div class="bank-tile selected" data-bank-id="HDFC">
+              <span class="bank-tile-icon">🏛️</span>
+              <strong class="bank-tile-name">HDFC Bank</strong>
+              <span class="bank-tile-code">FIP-HDFC</span>
+            </div>
+            <div class="bank-tile" data-bank-id="SBI">
+              <span class="bank-tile-icon">🔵</span>
+              <strong class="bank-tile-name">State Bank of India</strong>
+              <span class="bank-tile-code">FIP-SBI</span>
+            </div>
+            <div class="bank-tile" data-bank-id="ICICI">
+              <span class="bank-tile-icon">🟠</span>
+              <strong class="bank-tile-name">ICICI Bank</strong>
+              <span class="bank-tile-code">FIP-ICICI</span>
+            </div>
+            <div class="bank-tile" data-bank-id="AXIS">
+              <span class="bank-tile-icon">🟣</span>
+              <strong class="bank-tile-name">Axis Bank</strong>
+              <span class="bank-tile-code">FIP-AXIS</span>
+            </div>
+            <div class="bank-tile" data-bank-id="KOTAK">
+              <span class="bank-tile-icon">🔴</span>
+              <strong class="bank-tile-name">Kotak Mahindra</strong>
+              <span class="bank-tile-code">FIP-KOTAK</span>
+            </div>
+            <div class="bank-tile" data-bank-id="PNB">
+              <span class="bank-tile-icon">🟡</span>
+              <strong class="bank-tile-name">Punjab National Bank</strong>
+              <span class="bank-tile-code">FIP-PNB</span>
+            </div>
+            <div class="bank-tile" data-bank-id="BOB">
+              <span class="bank-tile-icon">🟤</span>
+              <strong class="bank-tile-name">Bank of Baroda</strong>
+              <span class="bank-tile-code">FIP-BOB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Verification Phone Number -->
+        <div class="bank-input-section">
+          <div class="bank-field-group">
+            <label for="bankConnectPhone">Registered Mobile Number (Linked to Bank)</label>
+            <div class="phone-input-wrap">
+              <span class="country-prefix">+91</span>
+              <input type="tel" id="bankConnectPhone" value="9876543210" placeholder="9876543210" maxlength="10">
+            </div>
+            <span class="field-hint">Used by Account Aggregator to discover linked accounts</span>
+          </div>
+
+          <div class="bank-field-group">
+            <label for="bankConnectVpa">Customer UPI VPA (Optional)</label>
+            <input type="text" id="bankConnectVpa" placeholder="e.g. merchant@okhdfcbank">
+          </div>
+        </div>
+
+        <!-- Step 3: Consent Details Summary -->
+        <div class="consent-summary-card">
+          <div class="consent-row">
+            <span class="c-key">Purpose:</span>
+            <strong class="c-val">Bank Statement Ingestion &amp; Automated UPI Analytics</strong>
+          </div>
+          <div class="consent-row">
+            <span class="c-key">Historical Data:</span>
+            <strong class="c-val">Past 90 Days Transactions</strong>
+          </div>
+          <div class="consent-row">
+            <span class="c-key">Data Types:</span>
+            <strong class="c-val">Deposits, Withdrawals, UPI, IMPS, Balances</strong>
+          </div>
+          <div class="consent-row">
+            <span class="c-key">Consent Validity:</span>
+            <strong class="c-val">180 Days (Revocable anytime)</strong>
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div class="bank-modal-actions">
+          <button type="button" class="action-btn-outline" id="btnCancelBankConnect">Cancel</button>
+          <button type="button" class="btn-connect-primary" id="btnConfirmBankConnect">
+            <span>Authorize Consent &amp; Link Account</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 14: Add New Customer Modal -->
+  <div class="modal-backdrop" id="addCustomerModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="addCustomerTitle" style="max-width: 520px;">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span id="addCustomerTitle">Register Customer Account</span>
+        </div>
+        <button class="modal-close-btn" id="addCustomerModalCloseBtn" aria-label="Close add customer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <form id="addCustomerForm" onsubmit="return false;">
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="newCustName">Customer Full Name <span style="color: var(--accent-vermilion);">*</span></label>
+            <input type="text" id="newCustName" placeholder="e.g. Ramesh Chandra" required style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.95rem;">
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="newCustPhone">Mobile Number (Linked to UPI / WhatsApp) <span style="color: var(--accent-vermilion);">*</span></label>
+            <div class="phone-input-wrap">
+              <span class="country-prefix">+91</span>
+              <input type="tel" id="newCustPhone" placeholder="9876543210" maxlength="10" required>
+            </div>
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="newCustEmail">Email Address (Optional)</label>
+            <input type="email" id="newCustEmail" placeholder="customer@example.in" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.95rem;">
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.5rem;">
+            <label for="newCustNotes">Opening Notes / Trust Rating</label>
+            <textarea id="newCustNotes" rows="2" placeholder="e.g. Regular neighborhood family, eligible for ₹5,000 udhar limit" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit;"></textarea>
+          </div>
+
+          <div class="bank-modal-actions" style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="action-btn-outline" id="btnCancelAddCustomer">Cancel</button>
+            <button type="submit" class="btn-connect-primary" id="btnSubmitAddCustomer">
+              <span>Save Customer</span>
+              <span class="btn-arrow">✓</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 15: Issue Udhar / Credit Modal -->
+  <div class="modal-backdrop" id="issueCreditModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="issueCreditTitle" style="max-width: 540px;">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span id="issueCreditTitle">Issue Udhar / Store Credit</span>
+        </div>
+        <button class="modal-close-btn" id="issueCreditModalCloseBtn" aria-label="Close issue credit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <form id="issueCreditForm" onsubmit="return false;">
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="creditCustomerSelect">Select Customer <span style="color: var(--accent-vermilion);">*</span></label>
+            <select id="creditCustomerSelect" required style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.95rem; background: var(--bg-surface); color: var(--ink-primary);">
+              <option value="">-- Choose Customer --</option>
+            </select>
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="creditAmount">Credit Amount (₹) <span style="color: var(--accent-vermilion);">*</span></label>
+            <input type="number" id="creditAmount" min="1" step="0.01" placeholder="e.g. 1500" required style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 1.05rem; font-weight: 700;">
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="creditDueDate">Expected Repayment Date (Optional)</label>
+            <input type="date" id="creditDueDate" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.95rem;">
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.5rem;">
+            <label for="creditDescription">Items Given on Udhar / Description</label>
+            <input type="text" id="creditDescription" placeholder="e.g. 10kg Aashirvaad Atta + 1L Oil" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.9rem;">
+          </div>
+
+          <div class="bank-modal-actions" style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="action-btn-outline" id="btnCancelIssueCredit">Cancel</button>
+            <button type="submit" class="btn-connect-primary" id="btnSubmitIssueCredit">
+              <span>Issue Credit &amp; Update Ledger</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 16: Record Udhar Repayment Modal -->
+  <div class="modal-backdrop" id="recordRepaymentModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="recordRepaymentTitle" style="max-width: 540px;">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span id="recordRepaymentTitle">Record Credit Repayment</span>
+        </div>
+        <button class="modal-close-btn" id="recordRepaymentModalCloseBtn" aria-label="Close repayment">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <form id="recordRepaymentForm" onsubmit="return false;">
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="repayCustomerSelect">Select Customer with Outstanding Balance <span style="color: var(--accent-vermilion);">*</span></label>
+            <select id="repayCustomerSelect" required style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.95rem; background: var(--bg-surface); color: var(--ink-primary);">
+              <option value="">-- Choose Customer --</option>
+            </select>
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="repayAmount">Repayment Amount Received (₹) <span style="color: var(--accent-vermilion);">*</span></label>
+            <input type="number" id="repayAmount" min="1" step="0.01" placeholder="e.g. 500" required style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 1.05rem; font-weight: 700; color: var(--tally-jama);">
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="repayMode">Payment Rail / Mode</label>
+            <select id="repayMode" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.95rem; background: var(--bg-surface); color: var(--ink-primary);">
+              <option value="UPI">NPCI UPI / QR Code</option>
+              <option value="CASH">Cash (Hand-to-Hand)</option>
+              <option value="BANK_TRANSFER">Direct Bank Transfer (IMPS/NEFT)</option>
+              <option value="CARD">Debit / POS Card</option>
+            </select>
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.5rem;">
+            <label for="repayReference">UPI UTR / Reference Number (Optional)</label>
+            <input type="text" id="repayReference" placeholder="e.g. 324100987123" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.9rem;">
+          </div>
+
+          <div class="bank-modal-actions" style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="action-btn-outline" id="btnCancelRepay">Cancel</button>
+            <button type="submit" class="btn-connect-primary" id="btnSubmitRepay">
+              <span>Confirm Repayment &amp; Update Ledger</span>
+              <span class="btn-arrow">✓</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 17: Payment Gateway & Digital UPI Checkout Modal -->
+  <div class="modal-backdrop" id="collectPaymentModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="collectPaymentTitle" style="max-width: 560px;">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="status-indicator"></span>
+          <span id="collectPaymentTitle">Payment Gateway &amp; UPI Collection</span>
+        </div>
+        <button class="modal-close-btn" id="collectPaymentModalCloseBtn" aria-label="Close collect payment">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div class="provider-rail-card" style="margin-bottom: 1.25rem;">
+          <div class="rail-card-top">
+            <span class="rail-badge active" id="gatewayActiveBadge">Active Gateway • Ready</span>
+            <span class="rail-speed">Latency: 45ms</span>
+          </div>
+          <h4 class="rail-name" id="gatewayDisplayName">Instant UPI &amp; Cards Settlement</h4>
+          <p class="rail-desc">Seamless payment collection via Razorpay, Cashfree, or Mock Sandbox with zero-trust signature verification.</p>
+        </div>
+
+        <form id="collectPaymentForm" onsubmit="return false;">
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="gatewayCustomerName">Customer / Payer Name</label>
+            <input type="text" id="gatewayCustomerName" placeholder="e.g. Vikram Singh" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.95rem;">
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.1rem;">
+            <label for="gatewayAmount">Amount to Collect (₹) <span style="color: var(--accent-vermilion);">*</span></label>
+            <input type="number" id="gatewayAmount" min="1" step="0.01" placeholder="e.g. 850" required style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 1.15rem; font-weight: 700; color: var(--tally-jama);">
+          </div>
+
+          <div class="bank-field-group" style="margin-bottom: 1.5rem;">
+            <label for="gatewayPurpose">Purpose / Bill Reference</label>
+            <input type="text" id="gatewayPurpose" value="Kirana Store Bill Settlement" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border-rule); border-radius: var(--radius-sm); font-size: 0.9rem;">
+          </div>
+
+          <!-- Gateway Order State Box -->
+          <div id="gatewayOrderBox" style="display: none; padding: 1rem; background: var(--bg-surface); border: 1px dashed var(--border-rule); border-radius: var(--radius-md); margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+              <span style="font-size: 0.8rem; color: var(--ink-secondary);">Gateway Order ID:</span>
+              <code id="gatewayOrderIdDisplay" style="font-size: 0.8rem; font-weight: 700;">-</code>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+              <span style="font-size: 0.8rem; color: var(--ink-secondary);">Order Status:</span>
+              <span class="stock-status-pill reorder" id="gatewayOrderStatusDisplay">CREATED</span>
+            </div>
+            <button type="button" class="btn-connect-primary" id="btnSimulateGatewaySuccess" style="width: 100%; padding: 0.6rem; justify-content: center;">
+              <span>Simulate Customer Payment &amp; Verify HMAC →</span>
+            </button>
+          </div>
+
+          <div class="bank-modal-actions" style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="action-btn-outline" id="btnCancelCollectPayment">Close</button>
+            <button type="submit" class="btn-connect-primary" id="btnInitiateGatewayPayment">
+              <span>Initiate Payment Order</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toastNotification" role="status" aria-live="polite">
+    <span id="toastMessage">Record saved to Hisab</span>
+  </div>
+
+  <!-- Footer (With Required ToS & Privacy Links - Rules 26 & 27) -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-branding">
+        <div class="footer-logo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2"/>
+            <line x1="8" y1="3" x2="8" y2="21" stroke-width="1.8"/>
+          </svg>
+          <span>Hisab</span>
+        </div>
+        <p class="footer-tagline">
+          Honoring the heritage of the Indian Bahi-Khata with voice intelligence.
+        </p>
+      </div>
+
+      <div class="footer-nav">
+        <div class="footer-col">
+          <span class="footer-heading">Product</span>
+          <a href="#home">Home</a>
+          <button type="button" class="footer-text-btn" id="footerApkBtn">Download APK</button>
+          <button type="button" class="footer-text-btn" id="footerVoiceBtn">Voice Assistant</button>
+        </div>
+        <div class="footer-col">
+          <span class="footer-heading">Compliance</span>
+          <button type="button" class="footer-text-btn" id="footerTosBtn">Terms of Service</button>
+          <button type="button" class="footer-text-btn" id="footerPrivacyBtn">Privacy Policy</button>
+          <a href="mailto:support@hisab.app">Merchant Support</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Hisab Technologies. All rights reserved.</p>
+      <p class="footer-version-tag">Production Build 2.4.1 • No telemetry tracking</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
