@@ -1,0 +1,95 @@
+/* Shared language controls and responsive merchant navigation. */
+.language-control { display: inline-flex; align-items: center; gap: 8px; font: 600 13px system-ui,sans-serif; }
+.language-control select { max-width: 140px; padding: 9px 12px; border: 1px solid #cbd8d1; border-radius: 9px; background: #fff; color: #183d2e; font: inherit; }
+.site-header .language-control { margin-right: 12px; }
+.app-container { display: block; }
+.sidebar { position: relative; width: 100%; height: auto; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; padding: 12px 24px 0; border-right: 0; border-bottom: 1px solid var(--border); transform: none; }
+.sidebar-header { padding: 0 20px 12px 0; border: 0; }
+.sidebar-shop-pill { margin: 0 0 12px auto; padding: 8px 14px; }
+.sidebar-nav { display: flex; flex: 0 0 100%; min-width: 0; flex-direction: row; width: 100%; gap: 5px; padding: 0; overflow-x: auto; }
+.sidebar-nav .nav-item { flex: 0 0 auto; width: auto; padding: 13px 16px; margin: 0; border-radius: 10px 10px 0 0; }
+.nav-section-title, .sidebar-footer, .mobile-bottom-nav, .mobile-menu-btn { display: none !important; }
+.main-wrapper { margin-left: 0; min-width: 0; }
+.top-bar { position: relative; height: auto; min-height: 88px; flex-wrap: wrap; gap: 16px; padding: 20px 28px; }
+.top-bar-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.content-body { max-width: 1600px; width: 100%; margin: 0 auto; padding-bottom: 100px; }
+.dashboard-actions { display: flex !important; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; padding: 0; }
+.mobile-action-pill { cursor: pointer; padding: 10px 16px; border: 1px solid var(--border); border-radius: 9px; background: #fff; font: 600 14px inherit; }
+.kpi-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+.paper-panel { min-width: 0; }
+#view-connections > div { grid-template-columns: repeat(auto-fit,minmax(min(100%,360px),1fr)) !important; }
+.consent-check { display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; line-height: 1.5; }
+#bankPhone, #bankChoice { margin: 8px 0 16px; }
+#bankFeedback { margin: 16px 0; line-height: 1.6; }
+.bank-account { padding: 14px 0; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.bank-account small { display: block; margin-top: 5px; }
+.ask-hisab-launcher { position: fixed; bottom: 24px; right: 24px; z-index: 90; box-shadow: 0 6px 24px #12382b33; border-radius: 100px; padding: 15px 22px; border: 0; background: #087d53; color: white; font: 700 15px system-ui,sans-serif; cursor: pointer; }
+.hisab-chat-dialog { width: min(600px,calc(100vw - 28px)); max-height: calc(100dvh - 40px); padding: 0; border: 1px solid #cbd8d1; border-radius: 18px; margin: auto; box-shadow: 0 20px 80px #12382b44; }
+.hisab-chat-dialog::backdrop { background: #112f2466; }
+.hisab-chat-dialog .assistant-workspace { height: min(650px,calc(100dvh - 110px)); min-height: 0; border: 0; box-shadow: none; margin: 0; }
+.hisab-chat-dialog .assistant-chat-stream { min-height: 90px; overflow-y: auto; }
+.hisab-chat-dialog .assistant-header { padding-right: 52px; }
+.hisab-chat-dialog .assistant-scope-tag { display: none; }
+.hisab-chat-dialog .assistant-input-box { flex-shrink: 0; }
+.hisab-chat-dialog .assistant-text-field { min-width: 0; }
+.chat-close { position: absolute; right: 12px; top: 12px; z-index: 1; border: 0; background: #edf5f0; border-radius: 50%; width: 32px; height: 32px; font-size: 23px; cursor: pointer; }
+.chat-mode { margin: 0; padding: 10px 20px; background: #eff7f2; color: #315847; font-size: 12px; }
+.trust-mode { padding: 12px; border-radius: 8px; background: #edf5f0; margin: 12px 0; }
+button:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #d6a538; outline-offset: 3px; }
+@media(max-width:1000px) { .kpi-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .sidebar-nav .nav-item { padding: 12px; font-size: 13px; } }
+@media(max-width:600px) {
+  .sidebar { padding: 12px 14px 0; }
+  .sidebar-shop-pill { display: none; }
+  .sidebar-nav .nav-item svg { display: none; }
+  .top-bar { padding: 16px; }
+  .top-bar-left { min-width: 0; }
+  .top-bar-actions { width: 100%; justify-content: space-between; }
+  .content-body { padding: 16px 14px 100px; }
+  .dashboard-actions { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .dashboard-actions .mobile-action-pill { white-space: normal; text-align: center; }
+  .kpi-grid { gap: 10px; }
+  .kpi-value { font-size: clamp(20px,5vw,28px); overflow-wrap: anywhere; }
+  .panel-header { flex-wrap: wrap; gap: 10px; }
+  .ask-hisab-launcher { bottom: 16px; right: 16px; }
+  .site-header .language-control span { display: none; }
+  .site-header .language-control select { max-width: 110px; }
+  .ledger-status-pill { display: none; }
+  #view-settings .paper-panel > div:last-child { flex-wrap: wrap; }
+}
+
+.shop-profile-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 20px; }
+[hidden] { display: none !important; }
+@media(max-width:600px) { .shop-profile-fields { grid-template-columns: 1fr; } }
+
+.hisab-brand-mark { display: block; flex-shrink: 0; }
+.assistant-brand-title .hisab-brand-mark { width: 28px; height: 28px; }
+.brand-icon-wrap:has(img) { background: transparent; padding: 0; width: 36px; height: 36px; }
+
+.overview-toolbar { margin-bottom: 20px; }
+
+.record-clear-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.record-clear-controls p { flex-basis: 100%; margin: 0; color: var(--ink-secondary); }
+
+.clear-records-dialog { max-width: min(460px,calc(100vw - 32px)); margin: auto; border: 1px solid var(--border); border-radius: 14px; padding: 24px; background: var(--surface,#fff); color: var(--ink); }
+.clear-records-dialog p { margin: 16px 0 24px; line-height: 1.6; }
+.clear-records-dialog button { margin-right: 12px; }
+.clear-records-dialog::backdrop { background: #112f2466; }
+
+button.sidebar-shop-pill { cursor: pointer; font: inherit; text-align: left; color: var(--ink); }
+.sidebar-shop-pill .shop-name, .sidebar-shop-pill .shop-owner { display: block; }
+button.sidebar-shop-pill:hover { border-color: var(--shop-green); background: #edf5f0; }
+
+/* Daily actions precede the overview heading; entry belongs to the assistant. */
+.overview-daily-actions { margin: 20px 32px 0; }
+.main-wrapper:not(:has(#view-dashboard.active)) > .overview-daily-actions { display: none; }
+.hisab-chat-dialog .assistant-workspace { overflow-y: auto; }
+.assistant-entry { flex-shrink: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface); color: var(--ink); }
+.assistant-entry summary { padding: 14px 20px; cursor: pointer; font-weight: 700; font-size: .9rem; }
+.assistant-entry summary:focus-visible { outline: 3px solid #d6a538; outline-offset: -3px; }
+.assistant-entry-body { padding: 0 20px 16px; font-size: .85rem; }
+.assistant-entry-body p { margin: 0 0 10px; line-height: 1.5; }
+.assistant-entry-body label { display: block; margin: 8px 0 4px; }
+.assistant-entry-body .daily-buttons { margin-bottom: 10px; }
+@media(max-width:600px) { .overview-daily-actions { margin: 14px 14px 0; } .assistant-entry summary { padding: 12px 16px; } .assistant-entry-body { padding: 0 16px 12px; } }
+
+.hisab-chat-dialog { background: var(--surface); color: var(--ink); }

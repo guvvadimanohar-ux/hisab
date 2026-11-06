@@ -39,7 +39,7 @@ const AIAgentService = require('./services/aiAgent.js');
 const { handleApiRequest } = require('./api/index.js');
 
 const PORT = parseInt(process.env.PORT, 10) > 0 ? parseInt(process.env.PORT, 10) : 8099;
-const IS_MOCK_MODE = String(process.env.AA_MOCK_MODE ?? 'true').toLowerCase() !== 'false';
+const IS_MOCK_MODE = String(process.env.AA_MOCK_MODE ?? 'false').toLowerCase() === 'true';
 const AA_ENVIRONMENT = (process.env.AA_ENVIRONMENT || 'sandbox').toLowerCase();
 const PAYMENT_GATEWAY = process.env.PAYMENT_GATEWAY || 'mock';
 const FRONTEND_DIR = path.resolve(__dirname, '..', 'frontend');
@@ -83,6 +83,7 @@ function parseBody(req, { raw = false } = {}) {
 
 function sendJson(res, statusCode, data, extraHeaders = {}) {
   res.writeHead(statusCode, {
+    'Cache-Control': 'no-store',
     'Content-Type': 'application/json; charset=utf-8',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -158,6 +159,11 @@ const apiContext = {
 // =============================================================================
 
 const server = http.createServer(async (req, res) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Permissions-Policy', 'camera=(), geolocation=(), microphone=(self)');
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' http: https:; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'");
   // CORS Preflight
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
@@ -183,13 +189,17 @@ const server = http.createServer(async (req, res) => {
     // ---------------------------------------------------------------------
     // Static Frontend Serving
     // ---------------------------------------------------------------------
-    const requestedFile = pathname === '/' ? 'index.html' : pathname.replace(/^\//, '');
+    let requestedFile = pathname === '/' ? 'index.html' : pathname.replace(/^\//, '');
     let filePath = path.resolve(FRONTEND_DIR, requestedFile);
 
     // Prevent directory traversal
-    if (!filePath.startsWith(FRONTEND_DIR)) {
+    if (filePath !== FRONTEND_DIR && !filePath.startsWith(FRONTEND_DIR + path.sep)) {
       res.writeHead(403, { 'Content-Type': 'text/plain' });
       return res.end('Forbidden');
+    }
+
+    if (!fs.existsSync(filePath) && fs.existsSync(filePath + '.html')) {
+      filePath = filePath + '.html';
     }
 
     fs.stat(filePath, (err, stats) => {
@@ -205,6 +215,7 @@ const server = http.createServer(async (req, res) => {
         '.js': 'application/javascript; charset=utf-8',
         '.json': 'application/json; charset=utf-8',
         '.csv': 'text/csv; charset=utf-8',
+        '.webmanifest': 'application/manifest+json; charset=utf-8',
         '.svg': 'image/svg+xml',
         '.png': 'image/png',
         '.jpg': 'image/jpeg',
@@ -212,7 +223,11 @@ const server = http.createServer(async (req, res) => {
         '.txt': 'text/plain; charset=utf-8'
       };
       const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-      res.writeHead(200, { 'Content-Type': contentType, 'Cache-Control': 'no-cache' });
+      const headers = { 'Content-Type': contentType, 'Cache-Control': 'no-cache' };
+      if (pathname === '/sw.js') {
+        headers['Service-Worker-Allowed'] = '/';
+      }
+      res.writeHead(200, headers);
       const stream = fs.createReadStream(filePath);
       stream.pipe(res);
     });

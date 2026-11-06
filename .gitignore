@@ -18,3 +18,18 @@ yarn-debug.log*
 # Test coverage & reports
 coverage/
 .nyc_output/
+node_modules
+
+# Local review screenshots may contain shop data. Do not publish.
+docs/screenshots/
+
+# Isolated chart build dependencies
+tools/charts/node_modules/
+
+# Native packaging outputs
+/dist/
+/android/.gradle/
+/android/build/
+/android/app/build/
+/android/local.properties
+/android/app/local.properties

@@ -14,7 +14,8 @@
     "test:cust": "node tests/customer_credit_tests.js",
     "test:pay": "node tests/payment_gateway_tests.js",
     "test:voice": "node tests/voice_tests.js",
-    "test:ai": "node tests/ai_voice_tests.js"
+    "test:ai": "node tests/ai_voice_tests.js",
+    "test:bank": "node tests/bank_api_tests.js"
   },
   "keywords": [
     "finance",

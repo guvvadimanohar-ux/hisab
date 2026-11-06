@@ -1,0 +1,67 @@
+{
+  "id": "/app",
+  "name": "Hisab AI - Kirana Ledger & Analytics",
+  "short_name": "Hisab AI",
+  "description": "AI-Powered Accounting, Voice Analytics, Udhaar Ledger, and WhatsApp Reminders for Indian Merchants",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait",
+  "background_color": "#e9f0e7",
+  "theme_color": "#1c625e",
+  "categories": [
+    "finance",
+    "business",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Udhaar Ledger",
+      "short_name": "Udhaar",
+      "description": "View outstanding loans & customer credit",
+      "url": "/app#udhaar",
+      "icons": [
+        {
+          "src": "/assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Record Transaction",
+      "short_name": "New Entry",
+      "description": "Record cash in or cash out",
+      "url": "/app#transactions",
+      "icons": [
+        {
+          "src": "/assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

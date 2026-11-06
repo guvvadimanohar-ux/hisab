@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');const fs=require('node:fs');const vm=require('node:vm');
+const storage=new Map(),classes=new Set();let resolveFetch;
+const document={documentElement:{dataset:{},classList:{add:x=>classes.add(x),remove:x=>classes.delete(x)}},querySelectorAll:()=>[],addEventListener:()=>{}};
+const window={fetch:()=>new Promise(resolve=>resolveFetch=resolve)};
+const location={search:'?utm_source=test&utm_campaign=shop&utm_content=%3Ctag%3E&email=private'};
+vm.runInNewContext(fs.readFileSync('frontend/js/siteFeatures.js','utf8'),{document,window,location,localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},URLSearchParams,console,setTimeout,queueMicrotask});
+assert.equal(document.documentElement.dataset.theme,'light');assert.equal(storage.has('hisab_campaign'),false);
+window.hisabSiteFeatures.campaignConsent(true);const campaign=JSON.parse(storage.get('hisab_campaign'));assert.equal(campaign.utm_source,'test');assert.equal(campaign.utm_content,'tag');assert.ok(!('email'in campaign));
+window.hisabSiteFeatures.campaignConsent(false);assert.equal(storage.has('hisab_campaign'),false);
+(async()=>{const pending=window.fetch('/test');assert.ok(classes.has('network-loading'));resolveFetch({status:200});await pending;assert.ok(!classes.has('network-loading'));const css=fs.readFileSync('frontend/css/siteFeatures.css','utf8');for(const selector of ['@media print','button:hover','html[data-theme=dark]','.scroll-progress','.is-loading','.form-feedback[data-state=error]','.form-feedback[data-state=success]'])assert.ok(css.includes(selector),selector);console.log('PASS: theme defaults, UTM opt-in/minimisation/withdrawal, real request loading lifecycle and feature stylesheet rules.');})().catch(e=>{console.error(e);process.exitCode=1});

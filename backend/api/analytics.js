@@ -140,11 +140,20 @@ async function handleAnalyticsRoutes(req, res, pathname, searchParams, context) 
     const loans = calculateLoanAnalytics(transactions);
     const insights = generateFinancialInsights(kpis, cashflow, customers, loans);
 
+    // Calculate category expense breakdown for intuitive visual spending bars
+    const totalOutflowAmt = kpis.totalOutflow || 1;
+    const expenseCategories = analyticsEngine.getCategoryBreakdown(transactions.filter(t => t.cash_flow_type === 'OUTFLOW'))
+      .map(cat => ({
+        ...cat,
+        percentage: totalOutflowAmt > 0 ? Math.round((cat.totalAmount / totalOutflowAmt) * 1000) / 10 : 0
+      }));
+
     sendJson(res, 200, {
       success: true,
       data: {
         kpis,
         cashflow,
+        expenseCategories,
         topCustomers: customers.topPayingCustomers.slice(0, 5),
         mostFrequentCustomers: customers.mostFrequentCustomers.slice(0, 5),
         repeatedCustomers: customers.repeatedCustomers.slice(0, 5),

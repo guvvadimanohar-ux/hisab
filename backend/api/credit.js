@@ -7,7 +7,9 @@ const {
   issueCredit,
   recordRepayment,
   listCredits,
-  getCreditSummary
+  getCreditSummary,
+  updateCredit,
+  deleteCredit
 } = require('../services/creditService.js');
 
 async function handleCreditRoutes(req, res, pathname, searchParams, context) {
@@ -85,6 +87,43 @@ async function handleCreditRoutes(req, res, pathname, searchParams, context) {
     } catch (err) {
       sendError(res, 400, 'REPAYMENT_FAILED', err.message);
     }
+    return true;
+  }
+
+  // PUT /api/credit/:id (update credit status and details)
+  if (pathname.startsWith('/api/credit/') && !pathname.includes('/repay') && !pathname.includes('/customer/') && !pathname.includes('/summary') && req.method === 'PUT') {
+    if (!guardMutation(req, res, 'credit', 20)) return true;
+    const user = requireAuth(req, res);
+    if (!user) return true;
+
+    const creditId = decodeURIComponent(pathname.replace('/api/credit/', ''));
+    try {
+      const body = await parseBody(req);
+      const updated = updateCredit(db, user.id, creditId, body);
+      if (!updated) {
+        sendError(res, 404, 'CREDIT_NOT_FOUND', 'Credit entry not found.');
+        return true;
+      }
+      sendJson(res, 200, { success: true, data: updated, message: 'Credit record updated successfully.' });
+    } catch (err) {
+      sendError(res, 400, 'CREDIT_UPDATE_FAILED', err.message);
+    }
+    return true;
+  }
+
+  // DELETE /api/credit/:id (delete credit entry)
+  if (pathname.startsWith('/api/credit/') && !pathname.includes('/repay') && !pathname.includes('/customer/') && !pathname.includes('/summary') && req.method === 'DELETE') {
+    if (!guardMutation(req, res, 'credit', 15)) return true;
+    const user = requireAuth(req, res);
+    if (!user) return true;
+
+    const creditId = decodeURIComponent(pathname.replace('/api/credit/', ''));
+    const deleted = deleteCredit(db, user.id, creditId);
+    if (!deleted) {
+      sendError(res, 404, 'CREDIT_NOT_FOUND', 'Credit entry not found.');
+      return true;
+    }
+    sendJson(res, 200, { success: true, message: 'Credit entry deleted successfully.' });
     return true;
   }
 

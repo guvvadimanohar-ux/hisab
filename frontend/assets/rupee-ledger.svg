@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" role="img" aria-labelledby="title">
+  <title id="title">Indian rupee ledger coin</title>
+  <defs>
+    <radialGradient id="gold" cx="35%" cy="28%" r="75%"><stop stop-color="#f4dfad"/><stop offset=".65" stop-color="#d8a353"/><stop offset="1" stop-color="#a97632"/></radialGradient>
+  </defs>
+  <ellipse cx="120" cy="209" rx="67" ry="9" fill="#24231f" opacity=".12"/>
+  <circle cx="120" cy="116" r="92" fill="none" stroke="#176b45" stroke-width="2" opacity=".35"/>
+  <circle cx="120" cy="116" r="78" fill="#986725"/>
+  <circle cx="120" cy="111" r="78" fill="url(#gold)" stroke="#b8873d" stroke-width="2"/>
+  <circle cx="120" cy="111" r="66" fill="none" stroke="#fff0cc" stroke-width="2"/>
+  <path d="M93 75h54M93 90h54M97 75c39 0 40 39 0 39l43 40" fill="none" stroke="#493419" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

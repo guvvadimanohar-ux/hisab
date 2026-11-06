@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hisab AI — Kirana Business Dashboard &amp; Ledger</title>
+  <meta name="description" content="Digital customer ledger, real payment analytics, and voice AI for small Indian kirana store owners.">
+  <meta name="theme-color" content="#00A86B">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Hisab AI">
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/improvements.css">
+<link rel="stylesheet" href="css/privacy.css">
+<link rel="stylesheet" href="css/siteFeatures.css">
+<link rel="stylesheet" href="css/bklitUtilities.css">
+<link rel="stylesheet" href="css/shopTools.css?v=39">
+  <link rel="stylesheet" href="css/shopFriendly.css?v=39">
+</head>
+<body>
+<a class="skip-link" href="#appMain">Skip to main content</a>
+
+<div class="app-container">
+
+  <!-- =======================================================================
+       1. Left Sidebar Navigation (Desktop)
+       ======================================================================= -->
+  <aside class="sidebar" id="appSidebar">
+    
+    <div class="sidebar-header">
+      <a href="javascript:void(0)" class="brand-link" onclick="window.merchantApp.navigateTo('dashboard')" title="Go to Dashboard">
+        <img class="hisab-brand-mark" src="assets/hisab-mark.svg" width="42" height="42" alt="Hisab shop logo">
+        <div class="brand-text">
+          <h1>Hisab AI</h1>
+          <span class="brand-tag">Kirana Ledger</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Active Shop Profile Pill -->
+    <button class="sidebar-shop-pill" id="shopProfileButton" type="button" aria-label="Edit shop profile" title="Settings &amp; profile" aria-controls="view-settings">
+      <span class="shop-avatar" id="sidebarShopAvatar">K</span>
+      <span class="shop-info">
+        <span class="shop-name" id="sidebarShopName">My Kirana Store</span>
+        <span class="shop-owner" id="sidebarShopOwner">Shop Owner</span>
+      </span>
+    </button>
+
+    <!-- Navigation Items -->
+    <nav class="sidebar-nav">
+      <span class="nav-section-title">Everyday</span>
+      
+      <button class="nav-item active" data-view="dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="9"/>
+          <rect x="14" y="3" width="7" height="5"/>
+          <rect x="14" y="12" width="7" height="9"/>
+          <rect x="3" y="16" width="7" height="5"/>
+        </svg>
+        <span>My shop</span>
+      </button>
+
+      <button class="nav-item" data-view="transactions">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        <span>Money book</span>
+      </button>
+
+      <button class="nav-item" data-view="udhaar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+          <path d="M6 6h10"/>
+          <path d="M6 10h10"/>
+        </svg>
+        <span>Udhaar / Aruvu</span>
+      </button>
+
+      <button class="nav-item" data-view="customers">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Customers</span>
+      </button>
+
+      <span class="nav-section-title">Manage your shop</span>
+
+      <button class="nav-item" data-view="connections">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+          <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+          <line x1="6" y1="6" x2="6.01" y2="6"/>
+          <line x1="6" y1="18" x2="6.01" y2="18"/>
+        </svg>
+        <span>Bank &amp; Payments</span>
+      </button>
+
+      <button class="nav-item" data-view="tools"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Business Tools</span></button>
+      <button class="nav-item" data-view="settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
+        </svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <a href="" class="sidebar-btn-home">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        <span>Back to Homepage</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- =======================================================================
+       2. Main Content Wrapper
+       ======================================================================= -->
+  <div class="main-wrapper">
+
+    <section class="shop-welcome" aria-labelledby="shopWelcomeTitle">
+      <div class="welcome-copy"><span class="welcome-eyebrow">A little easier, every day</span><h2 id="shopWelcomeTitle">Your shop. Your Hisab.</h2><p>Sales, expenses and udhaar — keep it all in one place.</p><span id="shopWelcomeDate" class="welcome-date"></span></div>
+      <svg class="welcome-shop" viewBox="0 0 220 140" aria-hidden="true"><circle cx="110" cy="75" r="62" fill="#ffe5ad"/><rect x="48" y="57" width="124" height="70" rx="7" fill="#fffdf5" stroke="#173f35" stroke-width="3"/><path d="M39 51h142l-14-24H53Z" fill="#176b45"/><path d="M39 51v10q14 17 28 0 14 17 28 0 14 17 28 0 14 17 28 0 16 17 30 0V51" fill="#f4b858" stroke="#173f35" stroke-width="3"/><path d="M68 27 61 51m28-24-3 24m26-24v24m23-24 4 24m16-24 10 24" stroke="#fffdf5" stroke-width="10"/><rect x="61" y="83" width="41" height="44" rx="3" fill="#d9eee2"/><rect x="117" y="82" width="40" height="27" rx="3" fill="#d9eee2"/><path d="M137 82v27M117 96h40" stroke="#176b45" stroke-width="2"/><circle cx="92" cy="105" r="2" fill="#176b45"/><path d="M33 128h154" stroke="#173f35" stroke-width="3" stroke-linecap="round"/></svg>
+      <div class="shop-shortcuts" aria-label="Everyday actions">
+        <button type="button" class="shop-shortcut shortcut-sale" onclick="window.merchantApp.openManualTxnModal('IN')"><span class="shortcut-icon" aria-hidden="true">↙</span><span><strong>Record sale</strong><small>Money received · Jama</small></span><span class="shortcut-arrow" aria-hidden="true">→</span></button>
+        <button type="button" class="shop-shortcut shortcut-expense" onclick="window.merchantApp.openManualTxnModal('OUT')"><span class="shortcut-icon" aria-hidden="true">↗</span><span><strong>Record expense</strong><small>Money spent · Kharch</small></span><span class="shortcut-arrow" aria-hidden="true">→</span></button>
+        <button type="button" class="shop-shortcut shortcut-credit" onclick="window.merchantApp.openGiveUdhaarModal()"><span class="shortcut-icon" aria-hidden="true">₹</span><span><strong>Give udhaar</strong><small>Customer buys on credit</small></span><span class="shortcut-arrow" aria-hidden="true">→</span></button>
+      </div>
+      <div class="welcome-secondary"><button type="button" onclick="window.merchantApp.openAddCustomerModal()">＋ Add customer</button><button type="button" onclick="window.merchantApp.openCSVUploadModal()">Import payment statement</button><button type="button" onclick="window.openShopTools('expiry')">View stock & purchases →</button></div>
+    </section>
+
+        <section class="daily-panel overview-daily-actions" id="dailyActionPanel" aria-labelledby="dailyTitle">
+          <div class="daily-heading"><div><h2 id="dailyTitle">Today’s action list</h2><p id="dailyLedgerLabel">Store ledger</p></div><button type="button" class="btn-secondary" id="dailyRefresh">Refresh</button></div>
+          <div id="dailyActions" aria-live="polite">Loading recorded dues…</div>
+          <p id="dailyStatus" class="panel-subtitle" role="status"></p>
+          <button type="button" class="btn-primary" id="openClosing">Close today’s cash</button>
+        </section>
+
+    <!-- Top Sticky Bar -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+
+        <div class="page-title-box">
+          <h2 id="pageTitleText">Business Overview</h2>
+          <p id="pageTitleSub">Real cash flow, customer activity, and financial insights</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Views Container -->
+    <main class="content-body" id="appMain" tabindex="-1">
+
+      <!-- ===================================================================
+           VIEW 1: Dashboard / Overview
+           =================================================================== -->
+      <section class="app-view active" id="view-dashboard">
+
+        
+        <!-- Zero-State Banner (Strictly shown when 0 real transactions exist) -->
+        <div class="empty-state-banner" id="dashboardEmptyState" style="display: none;">
+          <div class="empty-state-content">
+            <span class="empty-state-tag">Ready for your store data</span>
+            <h3>Let’s start your shop’s money book</h3>
+            <p>
+              Record your first sale or expense using the buttons above. You can also import a payment statement or connect a bank account. Your totals will come from your own records.
+            </p>
+            <div class="empty-state-actions">
+              <button class="btn-primary" onclick="window.merchantApp.openCSVUploadModal()">
+                Upload Payment CSV
+              </button>
+              <button class="btn-secondary" onclick="window.merchantApp.navigateTo('connections')">
+                Connect Bank / Account Aggregator
+              </button>
+              <button class="btn-secondary" onclick="window.merchantApp.downloadSampleCSV()">
+                Download Sample Format
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Populated Dashboard Content -->
+        <div id="dashboardStatsContent">
+          
+          <!-- Mobile Quick Action Buttons -->
+          <div class="mobile-quick-actions-bar">
+            <button class="mobile-action-pill" style="border-color: #BBE1D0; background: var(--shop-green-subtle); color: var(--shop-green);" onclick="window.merchantApp.openGiveUdhaarModal()">
+              <span>🤝</span> + Udhaar
+            </button>
+            <button class="mobile-action-pill" style="border-color: #BBE1D0; background: #E6F7F0; color: #008F5B;" onclick="window.merchantApp.openManualTxnModal('IN')">
+              <span>💰</span> + Jama
+            </button>
+            <button class="mobile-action-pill" style="border-color: #F3C4BC; background: #FDF4F2; color: var(--vermilion);" onclick="window.merchantApp.openManualTxnModal('OUT')">
+              <span>🛒</span> + Kharch
+            </button>
+            <button class="mobile-action-pill" onclick="window.merchantApp.openAddCustomerModal()">
+              <span>👤</span> + Customer
+            </button>
+            <button class="mobile-action-pill" onclick="window.merchantApp.openCSVUploadModal()">
+              <span>📂</span> Statement
+            </button>
+          </div>
+
+          <!-- Key Metric Cards Ribbon -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Money Received (Jama)</span>
+                <div class="kpi-icon">↓</div>
+              </div>
+              <div class="kpi-value inflow" id="kpiTotalInflow">₹0</div>
+              <div class="kpi-subtext">Total recorded inflows</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Money Spent (Kharch)</span>
+                <div class="kpi-icon">↑</div>
+              </div>
+              <div class="kpi-value outflow" id="kpiTotalOutflow">₹0</div>
+              <div class="kpi-subtext">Expenses &amp; supplier payouts</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Net Cash Flow</span>
+                <div class="kpi-icon">⇄</div>
+              </div>
+              <div class="kpi-value" id="kpiNetCash">₹0</div>
+              <div class="kpi-subtext">Received minus Spent</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Outstanding Udhaar</span>
+                <div class="kpi-icon">📖</div>
+              </div>
+              <div class="kpi-value udhaar" id="kpiOutstandingUdhaar">₹0</div>
+              <div class="kpi-subtext">Pending customer credit</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Transactions</span>
+                <div class="kpi-icon">#</div>
+              </div>
+              <div class="kpi-value" id="kpiTotalTxns">0</div>
+              <div class="kpi-subtext">Recorded transactions</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Active Customers</span>
+                <div class="kpi-icon">👥</div>
+              </div>
+              <div class="kpi-value" id="kpiActiveCustomers">0</div>
+              <div class="kpi-subtext">Distinct counterparties</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Avg. Customer Spend</span>
+                <div class="kpi-icon">₹</div>
+              </div>
+              <div class="kpi-value" id="kpiAvgSpend">₹0</div>
+              <div class="kpi-subtext">Per active customer</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-label">Repeat Buyer Rate</span>
+                <div class="kpi-icon">%</div>
+              </div>
+              <div class="kpi-value" id="kpiRepeatRate">0%</div>
+              <div class="kpi-subtext">Customers with &gt;1 purchase</div>
+            </div>
+          </div>
+
+          <!-- 1. Intuitive Money Flow Balance Scale for Instant Visual Understanding -->
+          <div class="paper-panel balance-scale-panel" id="moneyFlowBalancePanel">
+            <div class="panel-header" style="margin-bottom: 0.9rem;">
+              <div>
+                <h3 class="panel-title">
+                  <span style="font-size: 1.35rem;">⚖️</span>
+                  <span>Money Flow Balance Scale</span>
+                </h3>
+                <p class="panel-subtitle">Money In vs Money Out — See your shop's cash position at a single glance</p>
+              </div>
+            </div>
+            
+            <div id="visualBalanceMeterContainer">
+              <!-- Dynamically populated with high-contrast ratio meter and shopkeeper verdict -->
+            </div>
+          </div>
+
+          <!-- Section Grid: Cash Flow Trend Pillars & Customer Leaders -->
+          <div class="section-grid-2">
+            
+            <!-- Cash Flow Trend Chart Surface -->
+            <div class="paper-panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">
+                    <span style="font-size: 1.25rem;">📊</span>
+                    <span>Monthly Cash Flow Pillars</span>
+                  </h3>
+                  <p class="panel-subtitle">
+                    <span style="color: var(--shop-green); font-weight: 600;">🟢 Green Pillar = Money In (Sales)</span>
+                    <span style="color: var(--ink-muted); margin: 0 4px;">|</span>
+                    <span style="color: var(--vermilion); font-weight: 600;">🔴 Red Pillar = Money Out (Spend)</span>
+                  </p>
+                </div>
+              </div>
+              <div id="cashflowChartSvg">
+                <!-- Dynamic Visual Pillars rendered by merchantApp.js -->
+              </div>
+            </div>
+
+            <!-- Top Customers List -->
+            <div class="paper-panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">
+                    <span style="font-size: 1.25rem;">👥</span>
+                    <span>Top Paying Customers</span>
+                  </h3>
+                  <p class="panel-subtitle">By total payments received</p>
+                </div>
+                <button class="btn-secondary" style="padding: 0.3rem 0.65rem; font-size: 0.76rem;" onclick="window.merchantApp.navigateTo('customers')">View All</button>
+              </div>
+              <div id="dashboardTopCustomersList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 3. Where Did Money Go? Visual Category Breakdown -->
+          <div class="paper-panel" id="visualExpenseSplitPanel">
+            <div class="panel-header">
+              <div>
+                <h3 class="panel-title">
+                  <span style="font-size: 1.35rem;">🛍️</span>
+                  <span>Where Did Money Go?</span>
+                </h3>
+                <p class="panel-subtitle">Real store expenses and supplier payouts by category</p>
+              </div>
+            </div>
+            <div id="visualExpenseCategoryGrid">
+              <!-- Dynamically populated with visual icon progress tracks -->
+            </div>
+          </div>
+
+          <!-- Mandatory PRD Compliance: Products & Inventory Availability check -->
+          <div id="dashboardProductAnalysisNotice" style="margin-bottom: 1.5rem;">
+            <!-- Rendered dynamically -->
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           VIEW 2: Transactions Ledger
+           =================================================================== -->
+      <section class="app-view" id="view-transactions">
+        
+        <div class="paper-panel" style="margin-bottom: 0;">
+          
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title">Unified Transactions</h3>
+              <p class="panel-subtitle" id="txnFilteredCount">0 records</p>
+            </div>
+            <div style="display: flex; gap: 0.6rem;">
+              <button class="btn-secondary" onclick="window.location.href='/api/export'">Export CSV</button>
+              <button class="btn-primary" onclick="window.merchantApp.openManualTxnModal()">+ Record Entry</button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Bar -->
+          <div class="filter-bar">
+            <div class="search-input-wrap">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" class="search-input" id="txnSearchInput" placeholder="Search by customer, note, reference..." oninput="window.merchantApp.fetchTransactions()">
+            </div>
+
+            <select class="filter-select" id="txnFlowFilter" aria-label="Filter by money received or spent" onchange="window.merchantApp.fetchTransactions()">
+              <option value="">All Cash Flows</option>
+              <option value="INFLOW">Money Received (Jama)</option>
+              <option value="OUTFLOW">Money Spent (Kharch)</option>
+            </select>
+
+            <select class="filter-select" id="txnSourceFilter" aria-label="Filter by record source" onchange="window.merchantApp.fetchTransactions()">
+              <option value="">All Sources</option>
+              <option value="CSV">CSV Import</option>
+              <option value="UPI">UPI</option>
+              <option value="MANUAL">Manual Record</option>
+            </select>
+          </div>
+
+          <!-- Transactions Table -->
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Counterparty / Note</th>
+                  <th>Type</th>
+                  <th>Category</th>
+                  <th>Source</th>
+                  <th style="text-align: right;">Amount (₹)</th>
+                </tr>
+              </thead>
+              <tbody id="txnTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           VIEW 3: Customers Directory
+           =================================================================== -->
+      <section class="app-view" id="view-customers">
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <div>
+            <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--ink);">Store Customers Directory</h3>
+            <p style="font-size: 0.8rem; color: var(--ink-secondary);">Track individual buyer totals, contact references, and udhaar balances</p>
+          </div>
+          <button class="btn-primary" onclick="window.merchantApp.openAddCustomerModal()">+ Add Customer</button>
+        </div>
+
+        <!-- Suggested Counterparty Matches (Detected from repeated transactions) -->
+        <div id="customerSuggestionsContainer">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Confirmed Customers Directory -->
+        <div id="customersListBody">
+          <!-- Dynamically populated -->
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           VIEW 4: Udhaar / Aruvu Ledger
+           =================================================================== -->
+      <section class="app-view" id="view-udhaar">
+        
+        <!-- Udhaar Summary Header -->
+        <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+          <div class="kpi-card">
+            <div class="kpi-header"><span class="kpi-label">Total Udhaar Outstanding</span><div class="kpi-icon">📖</div></div>
+            <div class="kpi-value udhaar" id="udhaarTotalOutstanding">₹0</div>
+            <div class="kpi-subtext">Principal given minus repayments</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-header"><span class="kpi-label">Active Customer Accounts</span><div class="kpi-icon">👥</div></div>
+            <div class="kpi-value" id="udhaarActiveAccountsCount">0</div>
+            <div class="kpi-subtext">Customers with pending credit</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-header"><span class="kpi-label">Total Repaid to Date</span><div class="kpi-icon">✓</div></div>
+            <div class="kpi-value inflow" id="udhaarTotalRepaid">₹0</div>
+            <div class="kpi-subtext">Recovered Jama balance</div>
+          </div>
+        </div>
+
+        <!-- Udhaar Ledger Table Panel -->
+        <div class="paper-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title">Customer Udhaar Entries</h3>
+              <p class="panel-subtitle">Deterministic balance calculations (Principal - Repayments = Outstanding)</p>
+            </div>
+            <button class="btn-primary" onclick="window.merchantApp.openGiveUdhaarModal()">+ Give Udhaar</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>Description / Items</th>
+                  <th>Principal (₹)</th>
+                  <th>Repaid (₹)</th>
+                  <th>Outstanding (₹)</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="udhaarTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           VIEW 5: Connected Accounts & Providers
+           =================================================================== -->
+      <section class="app-view" id="view-connections">
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+          
+          <!-- Account Aggregator Adapter Card -->
+          <div class="paper-panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Bank Account Aggregator</h3>
+              <span class="badge" id="aaConnectionStatusBadge">Checking connection</span>
+            </div>
+            <p style="font-size: 0.86rem; color: var(--ink-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+              Connect a bank through your configured Account Aggregator. Review and approve the provider consent before importing statements. 
+            </p>
+            <button class="btn-secondary" id="requestBankSetupBtn" type="button">Connect my bank account</button>
+            <div id="bankSetupFields" hidden>
+            <div style="padding: 0.85rem;">
+              <label for="bankChoice">Select bank</label>
+              <select class="form-input" id="bankChoice" disabled><option value="">Loading banks</option></select>
+              <label for="bankPhone">Bank registered mobile number</label>
+              <input class="form-input" id="bankPhone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="13" placeholder="10-digit mobile number">
+              <label class="consent-check"><input type="checkbox" id="bankConsentCheck"> <span>I agree to request access to my bank statements.</span></label>
+            </div>
+            <button class="btn-primary" id="bankSyncBtn" onclick="window.merchantApp.initiateBankSync()">
+              Request bank consent
+            </button>
+            <button class="btn-secondary" id="refreshBankAccountsBtn" type="button">Refresh accounts</button>
+            </div>
+            <p id="bankFeedback" role="status" aria-live="polite"></p>
+            <div id="bankAccountsList"></div>
+          </div>
+
+          <!-- Payment Gateway Adapter Card -->
+          <div class="paper-panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Payment Gateway (UPI / QR)</h3>
+              <span class="badge badge-upi">Provider configuration required</span>
+            </div>
+            <p style="font-size: 0.86rem; color: var(--ink-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+              Generate instant UPI payment links to send to customers for settling outstanding udhaar. Verified payments auto-reconcile directly into your credit ledger.
+            </p>
+            <div style="background-color: var(--surface-alt); padding: 0.85rem; border-radius: 6px; border: 1px solid var(--border); font-size: 0.8rem; margin-bottom: 1.25rem;">
+              <strong>Supported Providers:</strong> Razorpay, Cashfree
+            </div>
+            <button class="btn-secondary" onclick="window.merchantApp.navigateTo('udhaar')">
+              Collect Udhaar via UPI
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           VIEW 6: Ask Hisab AI & Voice Assistant
+           =================================================================== -->
+      <section class="app-view" id="view-assistant">
+        
+        <div class="assistant-workspace">
+          
+          <div class="assistant-header">
+            <div class="assistant-brand-title">
+              <img class="hisab-brand-mark" src="assets/hisab-mark.svg" width="42" height="42" alt="Hisab shop logo">
+              <span>Ask Hisab AI</span>
+            </div>
+            <span class="assistant-scope-tag">Store Ledger Grounded · Real Data Only</span>
+          </div>
+
+          <!-- Chat Stream -->
+          <div class="assistant-chat-stream" id="assistantChatStream">
+            <div class="chat-bubble assistant">
+              <div class="bubble-content">
+                Namaste! I am your Hisab store assistant. Ask me questions about your real money flow, repeat buyers, or customer credit in Hindi, Telugu, or English.
+              </div>
+            </div>
+          </div>
+
+        <details class="assistant-entry" id="assistantEntry">
+          <summary id="entryTitle">Record by voice or text</summary><div class="assistant-entry-body">
+          <p>Try “Received 500 from Ravi”, “Paid supplier 2,000” or “Ravi ki 500 udhaar”. Use numeric amounts; you’ll review before saving.</p>
+          <label for="entryLanguage">Speech language</label>
+          <select id="entryLanguage" class="form-select"><option value="en-IN">English (India)</option><option value="hi-IN">Hindi</option><option value="te-IN">Telugu</option></select>
+          <label for="entryText">Your entry</label><input id="entryText" class="form-input" type="text" maxlength="500" placeholder="Paid supplier 2,000 cash">
+          <div class="daily-buttons"><button type="button" class="btn-secondary" id="entryMic">Speak entry</button><button type="button" class="btn-primary" id="entryReview">Review entry</button></div>
+          <p id="entryStatus" role="status" aria-live="polite"></p>
+        </div></details>
+          <!-- Quick Prompts Chips -->
+          <div class="prompt-chips-bar">
+            <button class="prompt-chip">"How much did I receive this week?"</button>
+            <button class="prompt-chip">"Who has outstanding udhaar?"</button>
+            <button class="prompt-chip">"Who are my repeat customers?"</button>
+            <button class="prompt-chip">"What was my average spend?"</button>
+          </div>
+
+          <!-- Input Bar -->
+          <div class="assistant-input-box">
+            <button class="assistant-mic-btn" id="assistantMicBtn" aria-label="Toggle voice query">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="22"/>
+                <line x1="8" y1="22" x2="16" y2="22"/>
+              </svg>
+            </button>
+            <input type="text" class="assistant-text-field" id="assistantTextInput" placeholder="Ask about cash flow, customers, udhaar...">
+            <button class="btn-primary" id="assistantSendBtn">Send</button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           VIEW 7: Settings & Data Trust
+           =================================================================== -->
+      <section class="app-view" id="view-tools"><div class="daily-heading"><h2>Business Tools</h2><button type="button" class="btn-secondary" id="toolsRefresh">Refresh tools</button></div><p id="toolsMode"></p><p id="toolsStatus" role="status" aria-live="polite"></p><nav id="toolsTabs" aria-label="Business tools"></nav><div id="toolsContent"></div></section>
+      <section class="app-view" id="view-settings">
+        
+        <div style="max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <div class="paper-panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Kirana Store Profile</h3>
+            </div>
+<div class="shop-profile-fields">            <div class="form-group">
+              <label class="form-label" for="settingsShopName">Shop Name</label>
+              <input type="text" class="form-input" id="settingsShopName" value="My Kirana Store">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="settingsOwnerName">Owner Name</label>
+              <input type="text" class="form-input" id="settingsOwnerName" value="Shop Owner">
+            </div>
+<div class="form-group"><label class="form-label" for="settingsShopPhone">Shop contact number</label><input type="tel" class="form-input" id="settingsShopPhone" maxlength="250"></div>
+<div class="form-group"><label class="form-label" for="settingsShopEmail">Shop email</label><input type="email" class="form-input" id="settingsShopEmail" maxlength="250"></div>
+<div class="form-group"><label class="form-label" for="settingsShopAddress">Shop address</label><input type="text" class="form-input" id="settingsShopAddress" maxlength="250"></div>
+<div class="form-group"><label class="form-label" for="settingsShopCity">City / town</label><input type="text" class="form-input" id="settingsShopCity" maxlength="250"></div>
+<div class="form-group"><label class="form-label" for="settingsShopState">State</label><input type="text" class="form-input" id="settingsShopState" maxlength="250"></div>
+<div class="form-group"><label class="form-label" for="settingsShopPincode">PIN code</label><input type="text" class="form-input" id="settingsShopPincode" maxlength="250"></div>
+<div class="form-group"><label class="form-label" for="settingsShopType">Business type</label><input type="text" class="form-input" id="settingsShopType" maxlength="250"></div>
+<div class="form-group"><label class="form-label" for="settingsShopGst">GSTIN (optional)</label><input type="text" class="form-input" id="settingsShopGst" maxlength="250"></div>
+<div class="form-group"><label class="form-label" for="settingsShopHours">Opening hours</label><input type="text" class="form-input" id="settingsShopHours" maxlength="250"></div>
+</div><button class="btn-primary" id="saveShopProfileBtn" type="button">Save shop details</button><p id="shopProfileFeedback" role="status" aria-live="polite"></p>
+          </div>
+
+          <div class="paper-panel">
+            <div class="panel-header">
+              <h3 class="panel-title">📱 App Mode &amp; Server Connection</h3>
+            </div>
+            <p style="font-size: 0.86rem; color: var(--ink-secondary); line-height: 1.5; margin-bottom: 1rem;">
+              Offline records are stored in this browser. Export a backup before clearing browser data. Bank connections and hosted AI require a server connection.
+            </p>
+            <div class="form-group">
+              <label class="form-label">Store Computer Wi-Fi IP / Server URL (Optional)</label>
+              <input type="text" class="form-input" id="settingsServerUrl" placeholder="e.g. http://192.168.1.15:8099">
+            </div>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button class="btn-primary" id="btnSaveServerUrl">Connect &amp; Sync</button>
+              <button class="btn-secondary" id="btnResetOffline">Use offline ledger</button>
+            </div>
+          </div>
+
+<section class="privacy-controls" id="privacyControls" aria-labelledby="privacyTitle"><h3 id="privacyTitle">Privacy and permissions</h3><p>AI and voice are optional. AI sends questions and relevant business context to your configured provider, which may process data outside India. Voice may send audio to your browser’s speech provider. Manual entry works without these permissions.</p><label><input type="checkbox" id="privacyai"> Allow business AI processing</label><label><input type="checkbox" id="privacyvoice"> Allow optional voice processing</label><div class="privacy-actions"><button id="privacySave" type="button">Save permissions</button><button id="privacyExport" type="button">Download complete private backup</button><button id="privacyDelete" type="button" class="privacy-delete">Delete account and active records</button></div><p id="privacyStatus" class="privacy-status" role="status" aria-live="polite"></p><nav class="legal-links" aria-label="Legal and privacy"><button type="button" data-faq>FAQ</button><a href="privacy.html">Privacy policy</a><a href="terms.html">Terms &amp; conditions</a><a href="cookies.html">Cookies policy</a><a href="refund.html">Refund policy</a><button type="button" data-storage-settings>Storage preferences</button></nav><div data-operator-details><p>Operator legal name, address and privacy contact have not been configured. These details are required before public launch.</p></div></section>
+          <div class="paper-panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Data Privacy &amp; Trust</h3>
+            </div>
+            <p style="font-size: 0.86rem; color: var(--ink-secondary); line-height: 1.5; margin-bottom: 1rem;">
+              Signed-in records belong to your store account. Offline records remain in this browser and are not encrypted by the app. AI requests use the configured provider. Only connect bank accounts you own and approve consent on the provider website.
+            </p>
+            <div style="display: flex; gap: 0.75rem;">
+              <button class="btn-secondary" id="exportAllDataBtn">Export store data</button>
+              <button class="btn-danger" id="settingsLogoutBtn" type="button">Log out</button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- =======================================================================
+       3. Mobile Bottom Navigation
+       ======================================================================= -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-item active" data-view="dashboard">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="9"/>
+        <rect x="14" y="3" width="7" height="5"/>
+        <rect x="14" y="12" width="7" height="9"/>
+        <rect x="3" y="16" width="7" height="5"/>
+      </svg>
+      <span>My shop</span>
+    </button>
+    <button class="mobile-nav-item" data-view="transactions">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="1" x2="12" y2="23"/>
+        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+      <span>Ledger</span>
+    </button>
+    <button class="mobile-nav-item" data-view="udhaar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+      </svg>
+      <span>Udhaar</span>
+    </button>
+    <button class="mobile-nav-item" data-view="customers">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+      </svg>
+      <span>Buyers</span>
+    </button>
+    <button class="mobile-nav-item" data-view="assistant">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+      </svg>
+      <span>Ask AI</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- =======================================================================
+     4. Modals & Action Dialogs
+     ======================================================================= -->
+
+<div class="modal-overlay" id="cashClosingModal" role="dialog" aria-modal="true" aria-labelledby="cashClosingTitle">
+  <div class="modal-card"><div class="modal-header"><h3 id="cashClosingTitle">Daily cash closing</h3><button type="button" class="modal-close-btn" aria-label="Close cash closing" onclick="window.merchantApp.closeModal('cashClosingModal')">&times;</button></div>
+  <form id="cashClosingForm"><div class="modal-body">
+    <p>Compare the cash in your drawer with settled cash records. Bank, UPI and customer udhaar issuance are excluded. Record cash withdrawals or deposits as cash movements before closing.</p>
+    <div class="form-group"><label for="closingDate">Business date (India)</label><input class="form-input" id="closingDate" type="date" required></div>
+    <div class="form-group"><label for="closingOpening">Opening cash (₹)</label><input class="form-input" id="closingOpening" type="number" min="0" max="10000000000" step="0.01" required></div>
+    <p id="closingSummary" aria-live="polite"></p>
+    <div class="form-group"><label for="closingCounted">Cash counted at closing (₹)</label><input class="form-input" id="closingCounted" type="number" min="0" max="10000000000" step="0.01" required></div>
+    <p id="closingDifference" aria-live="polite"></p>
+    <div class="form-group"><label for="closingNote">Explanation (required when cash differs)</label><textarea class="form-input" id="closingNote" maxlength="1000"></textarea></div>
+    <p id="closingStatus" role="status" aria-live="polite"></p>
+  </div><div class="modal-footer"><button type="button" class="btn-secondary" onclick="window.merchantApp.closeModal('cashClosingModal')">Cancel</button><button type="submit" class="btn-primary" id="saveClosing">Save closing</button></div></form></div>
+</div>
+<!-- Modal: CSV Ingestion Studio -->
+<div class="modal-overlay" id="csvUploadModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Import Payment Statement (CSV)</h3>
+      <button class="modal-close-btn" onclick="window.merchantApp.closeModal('csvUploadModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="csvDropZone" style="border: 2px dashed var(--border-strong); border-radius: 8px; padding: 2.5rem 1.5rem; text-align: center; cursor: pointer;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--ink-muted)" stroke-width="2" style="margin-bottom: 0.5rem;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <div style="font-weight: 700; color: var(--ink); margin-bottom: 0.25rem;">Drag &amp; drop your statement CSV here</div>
+        <div style="font-size: 0.8rem; color: var(--ink-secondary); margin-bottom: 1rem;">Supports PhonePe, Paytm, GooglePay, and bank statement CSV files</div>
+        <input type="file" id="csvFileInput" aria-label="Choose statement CSV file" accept=".csv" style="display: none;">
+        <button class="btn-secondary" onclick="document.getElementById('csvFileInput').click()">Browse File</button>
+      </div>
+
+      <div id="csvAuditStatusBox" style="display: none; margin-top: 1rem; font-size: 0.85rem;"></div>
+      <div id="csvMappingSection" style="display: none;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="window.merchantApp.closeModal('csvUploadModal')">Cancel</button>
+      <button class="btn-primary" id="csvCommitImportBtn" disabled onclick="window.merchantApp.commitCSVImport()">Commit Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Give Udhaar (Issue Credit) -->
+<div class="modal-overlay" id="giveUdhaarModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Record Customer Udhaar (Credit)</h3>
+      <button class="modal-close-btn" onclick="window.merchantApp.closeModal('giveUdhaarModal')">&times;</button>
+    </div>
+    <form id="giveUdhaarForm">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Select Customer</label>
+          <select class="form-select" id="giveUdhaarCustomerId" required>
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Credit Amount (₹)</label>
+          <input type="number" class="form-input" id="giveUdhaarAmount" placeholder="e.g. 850" min="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Items / Description</label>
+          <input type="text" class="form-input" id="giveUdhaarDesc" placeholder="e.g. 5kg Rice, 1L Oil" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="window.merchantApp.closeModal('giveUdhaarModal')">Cancel</button>
+        <button type="submit" class="btn-primary">Record Udhaar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Record Repayment -->
+<div class="modal-overlay" id="repaymentModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Record Udhaar Repayment</h3>
+      <button class="modal-close-btn" onclick="window.merchantApp.closeModal('repaymentModal')">&times;</button>
+    </div>
+    <form id="repaymentForm">
+      <div class="modal-body">
+        <input type="hidden" id="repaymentCreditId">
+        <div id="repaymentTargetLabel" style="font-weight: 600; color: var(--ink); margin-bottom: 1rem; font-size: 0.9rem;"></div>
+        <div class="form-group">
+          <label class="form-label">Repayment Amount (₹)</label>
+          <input type="number" class="form-input" id="repaymentAmount" min="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select class="form-select" id="repaymentMode">
+            <option value="CASH">Cash</option>
+            <option value="UPI">UPI Transfer</option>
+            <option value="BANK">Bank Deposit</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="window.merchantApp.closeModal('repaymentModal')">Cancel</button>
+        <button type="submit" class="btn-primary">Confirm Repayment</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Add Customer -->
+<div class="modal-overlay" id="addCustomerModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Add New Kirana Customer</h3>
+      <button class="modal-close-btn" onclick="window.merchantApp.closeModal('addCustomerModal')">&times;</button>
+    </div>
+    <form id="addCustomerForm">
+<p class="privacy-notice">Add only customer information needed for bookkeeping. Phone and notes are optional. Inform the customer how you use their details; do not enter identity documents or children’s data.</p>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Customer Name</label>
+          <input type="text" class="form-input" id="addCustName" placeholder="e.g. Ramesh Verma" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number (For WhatsApp / SMS)</label>
+          <input type="tel" class="form-input" id="addCustPhone" placeholder="10-digit mobile number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes / Store Address (Optional)</label>
+          <input type="text" class="form-input" id="addCustNotes" placeholder="e.g. Shop #4, Main Bazar">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="window.merchantApp.closeModal('addCustomerModal')">Cancel</button>
+        <button type="submit" class="btn-primary">Save Customer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Edit Customer Details -->
+<div class="modal-overlay" id="editCustomerModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Edit Customer Details</h3>
+      <button class="modal-close-btn" onclick="window.merchantApp.closeModal('editCustomerModal')">&times;</button>
+    </div>
+    <form id="editCustomerForm">
+      <div class="modal-body">
+        <input type="hidden" id="editCustId">
+        <div class="form-group">
+          <label class="form-label">Customer Name</label>
+          <input type="text" class="form-input" id="editCustName" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number (For WhatsApp / SMS)</label>
+          <input type="tel" class="form-input" id="editCustPhone" placeholder="10-digit mobile number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes / Address</label>
+          <input type="text" class="form-input" id="editCustNotes" placeholder="e.g. House #12, Gali No. 2">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="window.merchantApp.closeModal('editCustomerModal')">Cancel</button>
+        <button type="submit" class="btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Update Loan / Udhaar Status & Details -->
+<div class="modal-overlay" id="updateLoanModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Update Udhaar Status &amp; Details</h3>
+      <button class="modal-close-btn" onclick="window.merchantApp.closeModal('updateLoanModal')">&times;</button>
+    </div>
+    <form id="updateLoanForm">
+      <div class="modal-body">
+        <input type="hidden" id="updateLoanId">
+        <div style="background-color: var(--surface-alt); border: 1px solid var(--border); border-radius: 6px; padding: 0.85rem; margin-bottom: 1rem;">
+          <div style="font-weight: 700; color: var(--ink); font-size: 0.95rem;" id="updateLoanCustName">Customer</div>
+          <div style="font-size: 0.82rem; color: var(--ink-secondary); margin-top: 0.2rem;">
+            Current Outstanding Due: <strong style="color: var(--vermilion);" id="updateLoanDueAmt">₹0</strong>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Loan / Credit Status</label>
+          <select class="form-select" id="updateLoanStatus" required>
+            <option value="Pending">Pending (Unpaid)</option>
+            <option value="Partially Paid">Partially Paid</option>
+            <option value="Paid">Mark as Paid / Settled</option>
+            <option value="Overdue">Overdue (Delayed Payment)</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Due Date (Optional)</label>
+          <input type="date" class="form-input" id="updateLoanDueDate">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Items / Description Notes</label>
+          <input type="text" class="form-input" id="updateLoanDesc" placeholder="e.g. Rice, Dal, Oil items">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="window.merchantApp.closeModal('updateLoanModal')">Cancel</button>
+        <button type="submit" class="btn-primary">Update Loan Status</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Send WhatsApp & Text Dues Reminder -->
+<div class="modal-overlay" id="sendReminderModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.25rem;">💬</span>
+        <h3>Send Dues Reminder</h3>
+      </div>
+      <button class="modal-close-btn" onclick="window.merchantApp.closeModal('sendReminderModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="background-color: var(--shop-green-subtle); border: 1.5px solid #BBE1D0; border-radius: 8px; padding: 0.9rem; margin-bottom: 1.15rem; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <div style="font-weight: 700; color: var(--ink); font-size: 0.95rem;" id="reminderCustName">Customer</div>
+          <div style="font-size: 0.78rem; color: var(--ink-secondary);">Pending Kirana Due</div>
+        </div>
+        <div style="font-family: var(--font-mono); font-weight: 700; font-size: 1.3rem; color: var(--vermilion);" id="reminderDueAmt">
+          ₹0
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Mobile Number (WhatsApp &amp; SMS)</label>
+        <input type="tel" class="form-input" id="reminderPhone" placeholder="Enter 10-digit mobile number">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Message Preview</label>
+        <textarea class="form-input" id="reminderMessageText" rows="5" style="resize: vertical; font-size: 0.86rem; line-height: 1.45;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+      <button type="button" class="btn-secondary" onclick="window.merchantApp.copyReminderText()">
+        📋 Copy Text
+      </button>
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn-secondary" onclick="window.merchantApp.sendSmsReminder()">
+          💬 Send SMS
+        </button>
+        <button type="button" class="btn-primary" style="background-color: #25D366; border-color: #1EBE5D; color: #FFF;" onclick="window.merchantApp.sendWhatsAppReminder()">
+          🟢 Send WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Record Manual Transaction -->
+<div class="modal-overlay" id="manualTxnModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Record Store Transaction</h3>
+      <button class="modal-close-btn" onclick="window.merchantApp.closeModal('manualTxnModal')">&times;</button>
+    </div>
+    <form id="manualTxnForm">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Flow Direction</label>
+          <select class="form-select" id="manualTxnFlow">
+            <option value="INFLOW">Money Received (Jama)</option>
+            <option value="OUTFLOW">Money Spent / Expense (Kharch)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount (₹)</label>
+          <input type="number" class="form-input" id="manualTxnAmount" placeholder="e.g. 1200" min="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Party / Customer Name</label>
+          <input type="text" class="form-input" id="manualTxnParty" placeholder="e.g. Suresh Ji">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description / Items</label>
+          <input type="text" class="form-input" id="manualTxnDesc" placeholder="e.g. Grocery Provisions">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Mode</label>
+          <select class="form-select" id="manualTxnMode">
+            <option value="UPI">UPI</option>
+            <option value="CASH">Cash</option>
+            <option value="BANK">Bank</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="window.merchantApp.closeModal('manualTxnModal')">Cancel</button>
+        <button type="submit" class="btn-primary">Save Record</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Transaction Detail & Provenance -->
+<div class="modal-overlay" id="txnDetailModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Transaction Provenance</h3>
+      <button class="modal-close-btn" onclick="window.merchantApp.closeModal('txnDetailModal')">&times;</button>
+    </div>
+    <div class="modal-body" id="txnDetailModalBody">
+      <!-- Populated dynamically -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="window.merchantApp.closeModal('txnDetailModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/analytics.js"></script>
+<script src="js/privacy.js?v=39"></script>
+<script src="js/offlineEngine.js?v=39"></script>
+<script src="js/merchantApp.js?v=39"></script>
+<script src="js/dailyWorkflow.js"></script>
+<script src="js/dailyWorkflowUI.js?v=39"></script>
+<script src="js/shopToolsCore.js?v=39"></script>
+<script src="js/shopToolsUI.js?v=39"></script>
+<script src="js/shopFriendly.js?v=39"></script>
+<script src="js/translations.js?v=39"></script>
+<script src="js/improvements.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then((reg) => console.log('[PWA] Service Worker registered with scope:', reg.scope))
+        .catch((err) => console.warn('[PWA] Service Worker registration failed:', err));
+    });
+  }
+</script>
+<script src="js/siteFeatures.js?v=39"></script>
+<script src="js/vendor/anime-4.5.0.min.js"></script>
+<script src="js/siteMotion.js"></script>
+<script src="js/hisabCharts.js"></script>
+</body>
+</html>

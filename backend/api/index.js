@@ -3,6 +3,10 @@
  * Dispatches `/api/*` endpoints to modular domain handlers.
  */
 
+const { handleShopTools } = require('./shopTools.js');
+const { handleDailyRoutes } = require('./dailyWorkflow.js');
+const { handlePrivacyRoutes } = require('./privacy.js');
+const { handleClearRecordsRoutes } = require('./clearRecords.js');
 const { handleHealthRoutes } = require('./health.js');
 const { handleAuthRoutes } = require('./auth.js');
 const { handleCustomerRoutes } = require('./customers.js');
@@ -23,7 +27,15 @@ async function handleApiRequest(req, res, parsedUrl, context) {
     return false;
   }
 
+  if (await handlePrivacyRoutes(req, res, pathname, searchParams, context)) return true;
+
+  if (await handleShopTools(req, res, pathname, searchParams, context)) return true;
+
+  if (await handleDailyRoutes(req, res, pathname, searchParams, context)) return true;
+
   // 1. Health check routes
+  if (await handleClearRecordsRoutes(req, res, pathname, searchParams, context)) return true;
+
   if (await handleHealthRoutes(req, res, pathname, searchParams, context)) {
     return true;
   }

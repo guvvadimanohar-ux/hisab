@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hisab — Intelligent Digital Ledger & Voice Khatabook</title>
+  <meta name="description" content="Say goodbye to notes or khatabooks, digitize your way into our Hisab. Seamless voice-powered bookkeeping for merchants, businesses, and personal finance.">
+  
+  <!-- Typography: Fraunces (Sculpted Display Serif) + Plus Jakarta Sans (Precision Numerals & UI) -->
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/css/improvements.css">
+<link rel="stylesheet" href="/css/privacy.css">
+  
+  <!-- Original 3D scene, served locally. -->
+  <script src="/js/vendor/three-r128.min.js"></script>
+
+<link rel="icon" type="image/svg+xml" href="/assets/icon.svg">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<link rel="stylesheet" href="/css/siteFeatures.css">
+</head>
+<body>
+<a class="skip-link" href="#home">Skip to main content</a>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <!-- Top Left: Clickable Hisab Logo / Tag -->
+      <a href="index.html" class="brand-tag" id="brandLogo" aria-label="Hisab Home">
+        <span class="brand-icon-wrap" aria-hidden="true">
+          <!-- Hisab Open for Business mark -->
+          <img class="brand-svg" src="/assets/hisab-mark.svg" width="34" height="34" alt="" aria-hidden="true">
+        </span>
+        <span class="brand-text">Hisab</span>
+        <span class="brand-pill beta-muted" id="brandAuthBadge">BETA 2.4</span>
+      </a>
+
+      <!-- Center Subtle Status Pill -->
+      <div class="ledger-status-pill" id="headerStatusPill">
+        <span class="status-indicator" id="headerStatusIndicator"></span>
+        <span id="headerStatusText">Voice entry available</span>
+        <span class="pill-divider">•</span>
+        <span id="headerStatusSubtext">Indian Rupee (₹)</span>
+      </div>
+
+      <!-- Top Right: 3-line Hamburger Menu Button -->
+      <div class="nav-right-cluster">
+        <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navDrawer">
+          <span class="hamburger-box">
+            <span class="hamburger-bar bar-1"></span>
+            <span class="hamburger-bar bar-2"></span>
+            <span class="hamburger-bar bar-3"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hamburger Navigation Drawer / Overlay -->
+  <div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
+  <aside class="nav-drawer" id="navDrawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="drawer-brand">
+        <img class="brand-svg" src="/assets/hisab-mark.svg" width="34" height="34" alt="" aria-hidden="true">
+        <span id="drawerTitle">Hisab Menu</span>
+      </div>
+      <button class="drawer-close-btn" id="drawerCloseBtn" aria-label="Close navigation menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="drawer-nav">
+      <!-- Public Visitor Drawer Links -->
+      <ul class="drawer-links" id="publicDrawerLinks">
+        <li>
+          <a href="#home" class="drawer-link active" id="drawerLinkHome">
+            <span class="link-symbol">01</span>
+            <span class="link-label">Home</span>
+            <span class="link-indicator"></span>
+          </a>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerLinkHowItWorks">
+            <span class="link-symbol">02</span>
+            <span class="link-label">How it works</span>
+            <span class="link-action-tag">Voice Demo</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerLinkPricing">
+            <span class="link-symbol">03</span>
+            <span class="link-label">Pricing</span>
+            <span class="badge-free-pill">No subscription checkout</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerLinkDownload">
+            <span class="link-symbol">04</span>
+            <span class="link-label">Download APK</span>
+            <span class="badge-android">Android app</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="drawer-link" id="drawerLinkLogin">
+            <span class="link-symbol">05</span>
+            <span class="link-label">Login or Register</span>
+            <span class="link-action-tag">Merchant Portal</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="drawer-footer">
+      <div class="drawer-quick-stat">
+        <span class="stat-caption">Offline Ledger Sync</span>
+        <span class="stat-state">Stored in this browser</span>
+      </div>
+      <div class="drawer-policy-links">
+        <a href="/terms.html" class="text-link">Terms of Service</a>
+        <span class="policy-sep">/</span>
+        <a href="/privacy.html" class="text-link">Privacy Policy</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Layout -->
+  <main id="home" class="main-stage" tabindex="-1">
+    
+    <!-- Hero Section with Resadex-inspired 3D centerpiece and prominent typography -->
+    <section class="hero-section" aria-labelledby="heroTitle">
+      <div class="hero-container">
+        
+        <!-- Interactive 3D Canvas Centerpiece (Three.js WebGL with tactile ledger coin / acoustic sphere) -->
+        <div class="centerpiece-viewport" id="centerpieceViewport" >
+          <canvas id="threeCanvas" class="three-canvas" role="img" aria-label="Animated 3D Indian rupee ledger coin"></canvas>
+          <div class="centerpiece-badges" aria-hidden="true">
+            <span class="spec-tag left">Jama / Credit ₹</span>
+            <span class="spec-tag right">Udhar / Debit ₹</span>
+          </div>
+        </div>
+
+        <!-- Centered Core Titles -->
+        <div class="hero-editorial">
+          <div class="hero-overline">
+            <span class="overline-dot"></span>
+            <span>NEXT-GENERATION VOICE BOOKKEEPING</span>
+          </div>
+
+          <h1 class="hero-title" id="heroTitle">Hisab</h1>
+
+          <p class="hero-subtext">
+            Your khatabook, now voice-powered.
+          </p>
+
+          <!-- Micro-prompt examples (Moved directly below headline - Item 4) -->
+          <div class="prompt-suggestions">
+            <span class="suggestions-label">Try speaking:</span>
+            <button class="suggestion-chip" data-sample="Ramesh paid 450 rupees for grocery">"Ramesh paid ₹450 for grocery"</button>
+            <button class="suggestion-chip" data-sample="Gave 1200 udhar to Sharma ji">"Gave ₹1,200 udhar to Sharma ji"</button>
+            <button class="suggestion-chip" data-sample="Paid 800 rupees electric bill">"Paid ₹800 electric bill"</button>
+          </div>
+
+          <!-- CTA Buttons: Primary Voice Chat & Secondary Open my Hisab (Items 2, 3, 7) -->
+          <div class="hero-actions">
+            <button class="voice-chat-btn primary-cta" id="voiceChatBtn" aria-haspopup="dialog" aria-expanded="false">
+              <span class="btn-wave-ring" aria-hidden="true"></span>
+              <span class="mic-icon-wrap" aria-hidden="true">
+                <!-- Custom Microphone Vector SVG -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="22"/>
+                  <line x1="8" y1="22" x2="16" y2="22"/>
+                </svg>
+              </span>
+              <span class="btn-title">Voice Chat</span>
+            </button>
+
+            <button class="hero-secondary-btn" id="heroEnterBtn" aria-label="Open my Hisab Merchant Portal">
+              <span>Open my Hisab</span>
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <!-- Trust Line directly below CTAs (Item 5) -->
+          <p class="hero-trust-line">
+            Free to use · No app download needed · Works in Hindi, Hinglish &amp; English
+          </p>
+
+        </div>
+
+      </div>
+    </section>
+
+
+
+
+
+  </main>
+
+    <!-- Elevated Modal 1: Multilingual Voice Data AI Assistant Modal -->
+  <div class="modal-backdrop" id="voiceModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog voice-assistant-dialog" role="dialog" aria-modal="true" aria-labelledby="voiceModalTitle">
+      
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span class="recording-pulse" id="voicePulseIndicator"></span>
+          <span id="voiceModalStatus">Voice Assistant Ready</span>
+          <span class="modal-ai-engine-pill" id="modalAiEnginePill">Business assistant</span>
+        </div>
+        <button class="modal-close-btn" id="voiceModalCloseBtn" aria-label="Close voice assistant">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="voice-modal-body">
+        
+        <!-- Language Switcher Bar inside Modal -->
+        <div class="modal-lang-strip">
+          <span class="modal-lang-lbl">Language:</span>
+          <div class="modal-lang-pills" id="modalLangPills" role="radiogroup">
+            <button type="button" class="modal-lang-btn active" data-lang="auto">Auto Detect</button>
+            <button type="button" class="modal-lang-btn" data-lang="te-IN">తెలుగు (Telugu)</button>
+            <button type="button" class="modal-lang-btn" data-lang="hi-IN">हिंदी (Hindi)</button>
+            <button type="button" class="modal-lang-btn" data-lang="en-IN">English</button>
+          </div>
+        </div>
+
+        <!-- Live Waveform Visualizer Canvas -->
+        <div class="waveform-stage">
+          <canvas id="waveformCanvas" width="480" height="120" class="waveform-canvas"></canvas>
+          <div class="mic-orbit-button" id="micToggleBtn" role="button" tabindex="0" aria-label="Toggle microphone">
+            <svg class="mic-svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="22"/>
+              <line x1="8" y1="22" x2="16" y2="22"/>
+            </svg>
+          </div>
+        </div>
+
+        <h3 class="voice-instruction-title" id="voiceInstruction">Press the mic and speak naturally</h3>
+        <p class="voice-speech-transcript" id="speechTranscript">"..."</p>
+
+        <!-- Dual Text Input Inside Modal -->
+        <div class="modal-ai-input-strip">
+          <input type="text" id="modalAiTextInput" class="modal-ai-input" placeholder="Or type question in Telugu, Hindi or English..." autocomplete="off" />
+          <button type="button" class="btn-modal-ai-send" id="btnModalAiSend">Ask</button>
+        </div>
+
+        <!-- AI Assistant Answer Card inside Modal -->
+        <div class="modal-ai-answer-card" id="modalAiAnswerCard" style="display: none;">
+          <div class="modal-ai-card-header">
+            <div class="modal-ai-header-left">
+              <span class="ai-status-orb active" id="modalAiStatusOrb"></span>
+              <strong id="modalAiCardTitle">Hisab AI Answer</strong>
+              <span class="ai-lang-pill" id="modalAiResponseLang">Telugu</span>
+            </div>
+            <button type="button" class="btn-modal-tts-play" id="btnModalTtsPlay" title="Read Aloud">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+              </svg>
+              <span id="modalTtsPlayLabel">Speak</span>
+            </button>
+          </div>
+          <div class="modal-ai-card-body">
+            <div class="modal-ai-echo" id="modalAiEcho"></div>
+            <div class="modal-ai-text" id="modalAiText"></div>
+            <div class="modal-ai-pills" id="modalAiPills"></div>
+            <div class="modal-ai-chart-box" id="modalAiChartBox" style="display: none;">
+              <canvas id="modalAiChartCanvas" width="440" height="180"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggested Chips inside Modal -->
+        <div class="modal-prompt-chips" id="modalPromptChips">
+          <span class="modal-chips-lbl">Try asking:</span>
+          <button type="button" class="modal-chip" data-query="Telangana lo ee month total sales entha?">"Telangana lo ee month total sales entha?"</button>
+          <button type="button" class="modal-chip" data-query="Which customer paid the most last month?">"Which customer paid the most?"</button>
+          <button type="button" class="modal-chip" data-query="Hyderabad lo enni customers unnaru?">"Hyderabad lo enni customers unnaru?"</button>
+          <button type="button" class="modal-chip" data-query="Pichhle mahine ka total sales kitna tha?">"Pichhle mahine ka total sales kitna tha?"</button>
+        </div>
+
+        <!-- Language and Voice Options -->
+        <div class="voice-footer-meta">
+          <span>Supported: <strong>Telugu (తెలుగు), Hindi (हिंदी), Indian English, Hinglish</strong></span>
+          <span class="engine-tag" id="modalAiPrivacyTag">Optional business assistant</span>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Elevated Modal 2: Download APK Modal -->
+  <div class="modal-backdrop" id="apkModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog apk-dialog" role="dialog" aria-modal="true" aria-labelledby="apkModalTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span>Android Application Package</span>
+        </div>
+        <button class="modal-close-btn" id="apkModalCloseBtn" aria-label="Close APK download dialog">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="apk-modal-body">
+        <div class="apk-hero-badge">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M4 17l6-6-6-6"/>
+            <path d="M12 19h8"/>
+            <rect x="3" y="3" width="18" height="18" rx="3" stroke-width="1.6"/>
+          </svg>
+        </div>
+
+        <h3 class="apk-title" id="apkModalTitle">Download Hisab APK</h3>
+        <p class="apk-desc">Install the full native Android app for zero-latency offline bookkeeping, daily SMS payment reminders, and WhatsApp receipt sharing.</p>
+        
+        <div class="apk-meta-table">
+          <div class="apk-row">
+            <span>Package Name</span>
+            <code>com.hisab.digital.khatabook</code>
+          </div>
+          <div class="apk-row">
+            <span>Version</span>
+            <strong>v2.4.1 (Stable Build)</strong>
+          </div>
+          <div class="apk-row">
+            <span>File Size</span>
+            <span>18.4 MB</span>
+          </div>
+          <div class="apk-row">
+            <span>SHA-256 Checksum</span>
+            <code class="checksum">8f9b...3c21</code>
+          </div>
+        </div>
+
+        <div class="apk-download-actions">
+          <a href="#download-apk" class="btn-download-trigger" id="downloadApkTriggerBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>Download Hisab.apk</span>
+          </a>
+          <button class="btn-cancel-entry" id="apkCancelBtn">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elevated Modal 3: Login or Register Modal -->
+  <div class="modal-backdrop" id="authModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog auth-dialog" role="dialog" aria-modal="true" aria-labelledby="authModalHeaderTitle">
+      <div class="voice-modal-header">
+        <div class="voice-assistant-badge">
+          <span id="authModalHeaderTitle">Merchant Account Portal</span>
+        </div>
+        <button class="modal-close-btn" id="authModalCloseBtn" aria-label="Close authentication modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="auth-modal-body">
+        <div class="auth-tabs" id="authTabsHeader">
+          <button type="button" class="auth-tab-btn active" id="tabLoginBtn">Login</button>
+          <button type="button" class="auth-tab-btn" id="tabRegisterBtn">Register Store</button>
+        </div>
+
+        <!-- Section A: Login Form Block -->
+        <div id="loginFormBlock" class="auth-panel">
+          <form class="auth-form" id="loginForm" onsubmit="event.preventDefault(); window.handleLoginSubmit();">
+            <div class="form-field">
+              <label for="loginIdentifier">Mobile Number or Email</label>
+              <div class="input-with-prefix">
+                <span class="phone-prefix">+91</span>
+                <input type="text" id="loginIdentifier" placeholder="98765 43210 or merchant@hisab.in" required class="auth-input">
+              </div>
+            </div>
+
+            <div class="form-field">
+              <div class="field-label-row">
+                <label for="loginPassword">Password</label>
+                <a href="#forgot" class="forgot-link" onclick="event.preventDefault(); window.hisabApp.showToast('Password recovery is not configured. Contact the operator; no reset message has been sent.');">Forgot?</a>
+              </div>
+              <div class="input-with-action">
+                <input type="password" id="loginPassword" placeholder="Enter your password" required class="auth-input password-input">
+                <button type="button" class="toggle-password-btn" data-target="loginPassword" aria-label="Toggle password visibility">
+                  <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Captcha Section: I'm not a robot -->
+
+            <button type="submit" class="btn-auth-submit" id="loginSubmitBtn">Login into Hisab</button>
+          </form>
+        </div>
+
+        <!-- Section B: Register Store Form Block -->
+        <div id="registerFormBlock" class="auth-panel" style="display: none;">
+          
+          <!-- Step 1: Merchant Registration Form -->
+          <form class="auth-form" id="registerStep1Form" onsubmit="event.preventDefault(); window.handleRegisterStep1Submit();">
+            <div class="form-field">
+              <label for="regFullName">Full Name</label>
+              <input type="text" id="regFullName" placeholder="e.g. Ramesh Kumar" required class="auth-input">
+            </div>
+
+            <div class="form-field">
+              <label for="regShopName">Shop / Store Name</label>
+              <input type="text" id="regShopName" placeholder="e.g. Kumar General Provision" required class="auth-input">
+            </div>
+
+            <div class="form-field-row">
+              <div class="form-field half">
+                <label for="regPhone">Mobile Number (India)</label>
+                <div class="input-with-prefix">
+                  <span class="phone-prefix">+91</span>
+                  <input type="tel" id="regPhone" pattern="[0-9]{10}" placeholder="98765 43210" required class="auth-input">
+                </div>
+              </div>
+
+              <div class="form-field half">
+                <label for="regEmail">Email Address (optional)</label>
+                <input type="email" id="regEmail" placeholder="merchant@store.in" class="auth-input">
+              </div>
+            </div>
+
+            <!-- Password Blanks Twice for Double Verification -->
+            <div class="form-field-row">
+              <div class="form-field half">
+                <label for="regPassword">Password</label>
+                <div class="input-with-action">
+                  <input type="password" id="regPassword" minlength="6" placeholder="Create password" required class="auth-input password-input">
+                  <button type="button" class="toggle-password-btn" data-target="regPassword" aria-label="Toggle password visibility">
+                    <svg class="eye-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="eye-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-field half">
+                <label for="regConfirmPassword">Confirm Password</label>
+                <div class="input-with-action">
+                  <input type="password" id="regConfirmPassword" minlength="6" placeholder="Re-enter password" required class="auth-input password-input">
+                  <button type="button" class="toggle-password-btn" data-target="regConfirmPassword" aria-label="Toggle password visibility">
+                    <svg class="eye-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="eye-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Captcha Section: I'm not a robot -->
+
+<p class="privacy-notice">Your shop name, owner name, phone and password are used to create and secure your ledger account. Email is optional. AI and voice stay disabled until you separately enable them.</p><label class="form-consent"><input type="checkbox" id="regPrivacyConsent" required> I agree to the <a href="/terms.html" target="_blank" rel="noopener">terms</a> and consent to the account data processing described in the <a href="/privacy.html" target="_blank" rel="noopener">privacy policy</a>.</label><label class="form-consent"><input type="checkbox" id="regAdultConsent" required> I am 18 or older and authorised to manage this shop.</label><button type="submit" class="btn-auth-submit" id="regStep1SubmitBtn">Create store account</button>
+          </form>
+
+        </div>
+
+        <p class="auth-disclaimer">
+          Read our 
+          <a href="/terms.html" class="text-link">Terms of Service</a> and 
+          <a href="/privacy.html" class="text-link">Privacy Policy</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toastNotification" role="status" aria-live="polite">
+    <span id="toastMessage">Record saved to Hisab</span>
+  </div>
+
+  <!-- Footer (With Required ToS & Privacy Links - Rules 26 & 27) -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-branding">
+        <div class="footer-logo">
+          <img src="/assets/hisab-mark.svg" width="34" height="34" alt="" aria-hidden="true">
+          <span>Hisab</span>
+        </div>
+        <p class="footer-tagline">
+          Honoring the heritage of the Indian Bahi-Khata with voice intelligence.
+        </p>
+      </div>
+
+      <div class="footer-nav">
+        <div class="footer-col">
+          <span class="footer-heading">Product</span>
+          <button type="button" class="footer-text-btn" data-contact>Contact</button>
+          <a href="#home">Home</a>
+          <button type="button" class="footer-text-btn" id="footerApkBtn">Download APK</button>
+          <button type="button" class="footer-text-btn" id="footerVoiceBtn">Voice Assistant</button>
+        </div>
+        <div class="footer-col">
+          <span class="footer-heading">Legal &amp; privacy</span>
+          <button type="button" class="footer-text-btn" data-faq>FAQ</button>
+          <a href="/terms.html" class="text-link">Terms of Service</a>
+          <a href="/privacy.html" class="text-link">Privacy Policy</a>
+          <a href="/cookies.html">Cookies policy</a>
+<a href="/refund.html">Refund policy</a>
+<button type="button" class="footer-text-btn" data-storage-settings>Storage preferences</button>
+<a href="/privacy.html">Operator &amp; privacy contact</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Hisab.</p>
+      <p class="footer-version-tag">Bookkeeping for small shops</p>
+    </div>
+  </footer>
+
+
+  <!-- Scripts -->
+  <script src="/js/analytics.js"></script>
+<script src="/js/privacy.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/app.js"></script>
+  <script src="/js/translations.js"></script>
+  <script src="/js/improvements.js"></script>
+<script src="/js/siteFeatures.js"></script>
+<script src="/js/vendor/anime-4.5.0.min.js"></script>
+<script src="/js/siteMotion.js"></script>
+</body>
+</html>

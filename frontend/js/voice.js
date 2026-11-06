@@ -280,11 +280,11 @@ class HisabVoiceAssistant {
         const modalPill = document.getElementById('modalAiEnginePill');
         if (json.data && json.data.ollama) {
           const modelName = json.data.model || 'qwen2.5';
-          if (pill) pill.textContent = `Ollama: ${modelName}`;
-          if (modalPill) modalPill.textContent = `Ollama: ${modelName}`;
+          if (pill) pill.textContent = `${json.data?.provider === 'groq' ? 'Groq' : 'AI'}: ${modelName}`;
+          if (modalPill) modalPill.textContent = `${json.data?.provider === 'groq' ? 'Groq' : 'AI'}: ${modelName}`;
         } else {
           if (pill) pill.textContent = 'Engine: Local Fast SQL';
-          if (modalPill) modalPill.textContent = 'Local Safe AI';
+          if (modalPill) modalPill.textContent = 'Ledger engine';
         }
       }
     } catch (e) {
@@ -300,7 +300,8 @@ class HisabVoiceAssistant {
     }
   }
 
-  startListening(context = 'inline') {
+  async startListening(context = 'inline') {
+    if (!await window.hisabPrivacy.requirePermission('voice')) return;
     this.stopSpeaking();
 
     if (this.recognition) {
@@ -410,6 +411,7 @@ class HisabVoiceAssistant {
    * Dispatches Query to /api/ai/chat and updates both Inline and Modal views
    */
   async handleQuery(queryText) {
+    if (!await window.hisabPrivacy.requirePermission('ai')) return;
     if (!queryText || !queryText.trim()) return;
     const cleanQuery = queryText.trim();
 
@@ -426,6 +428,7 @@ class HisabVoiceAssistant {
         body: JSON.stringify({
           query: cleanQuery,
           sessionId: this.sessionId,
+          requestId: crypto.randomUUID(),
           languageHint: this.currentLanguage !== 'auto' ? this.currentLanguage : null
         })
       });

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_tagline">Offline Kirana Ledger &amp; Financial Analytics</string>
+    <string name="permission_mic_rationale">Hisab AI needs microphone access to understand voice commands and calculate store analytics by voice.</string>
+</resources>

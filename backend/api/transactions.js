@@ -9,7 +9,7 @@ const { recordTransaction } = require('../services/transactionEngine.js');
 
 async function handleTransactionRoutes(req, res, pathname, searchParams, context) {
   const { db, helpers } = context;
-  const { sendJson, sendError, requireAuth, guardMutation } = helpers;
+  const { sendJson, sendError, requireAuth, guardMutation, parseBody } = helpers;
 
   // GET /api/customers -> Full Customer Analytics Directory
   if (pathname === '/api/customers' && req.method === 'GET') {

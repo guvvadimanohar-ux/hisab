@@ -51,18 +51,23 @@ async function handleUploadRoutes(req, res, pathname, searchParams, context) {
 
     const body = await parseBody(req);
     const { csvText, mapping, datasetName = 'Merchant Statement' } = body;
-    if (!csvText || !mapping) {
-      sendError(res, 400, 'MISSING_FIELDS', 'Both csvText and mapping are required for audit.');
+    if (!csvText) {
+      sendError(res, 400, 'MISSING_FIELDS', 'csvText is required for audit.');
       return true;
     }
 
-    const { rows } = parseCsvString(csvText);
+    const { headers, rows } = parseCsvString(csvText);
     if (rows.length === 0) {
       sendError(res, 400, 'EMPTY_ROWS', 'No transaction rows found in CSV.');
       return true;
     }
 
-    const { normalized, qualityReport } = normalizeTransactions(rows, mapping, 'PREVIEW', datasetName);
+    const detected = detectColumnMappings(headers);
+    const effectiveMapping = (mapping && Object.keys(mapping).length > 0)
+      ? { ...detected, ...mapping }
+      : detected;
+
+    const { normalized, qualityReport } = normalizeTransactions(rows, effectiveMapping, 'PREVIEW', datasetName);
     sendJson(res, 200, {
       success: true,
       data: { qualityReport, sampleCount: normalized.length, previewTransactions: normalized.slice(0, 5) }
@@ -78,19 +83,24 @@ async function handleUploadRoutes(req, res, pathname, searchParams, context) {
 
     const body = await parseBody(req);
     const { csvText, mapping, datasetName = 'Imported Statement' } = body;
-    if (!csvText || !mapping) {
-      sendError(res, 400, 'MISSING_FIELDS', 'Both csvText and mapping are required for import.');
+    if (!csvText) {
+      sendError(res, 400, 'MISSING_FIELDS', 'csvText is required for import.');
       return true;
     }
 
-    const { rows } = parseCsvString(csvText);
+    const { headers, rows } = parseCsvString(csvText);
     if (rows.length === 0) {
       sendError(res, 400, 'EMPTY_ROWS', 'No transaction rows found in CSV.');
       return true;
     }
 
+    const detected = detectColumnMappings(headers);
+    const effectiveMapping = (mapping && Object.keys(mapping).length > 0)
+      ? { ...detected, ...mapping }
+      : detected;
+
     const datasetId = `DS-${Date.now()}`;
-    const { normalized, qualityReport } = normalizeTransactions(rows, mapping, datasetId, datasetName);
+    const { normalized, qualityReport } = normalizeTransactions(rows, effectiveMapping, datasetId, datasetName);
     if (normalized.length === 0) {
       sendJson(res, 400, {
         success: false,

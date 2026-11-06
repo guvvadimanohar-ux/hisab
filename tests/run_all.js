@@ -7,6 +7,14 @@ const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 
 const suites = [
+  { name: 'Shop Tools Suite', file: 'shop_tools_tests.js' },
+  { name: 'Merchant Session Recognition Suite', file: 'merchant_session_tests.js' },
+  { name: 'Daily Shop Workflow Suite', file: 'daily_workflow_tests.js' },
+  { name: 'Analytics Consent Suite', file: 'analytics_tests.js' },
+  { name: 'Dashboard Chart Data Suite', file: 'chart_data_tests.js' },
+  { name: 'Presentation Motion Suite', file: 'site_motion_tests.js' },
+  { name: 'Site Features Suite', file: 'site_features_tests.js' },
+  { name: 'Privacy & Consent Suite', file: 'privacy_tests.js' },
   { name: 'UPI & Account Aggregator Suite', file: 'aa_tests.js' },
   { name: 'Financial Calculation Engine Suite', file: 'financial_tests.js' },
   { name: 'Security, Multi-User Isolation & Auth Suite', file: 'security_tests.js' },

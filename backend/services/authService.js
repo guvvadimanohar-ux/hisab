@@ -95,7 +95,7 @@ function createSession(db, userId) {
 
   return {
     token,
-    setCookie: `${SESSION_COOKIE}=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${SESSION_TTL_MS / 1000}`
+    setCookie: `${SESSION_COOKIE}=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${SESSION_TTL_MS / 1000}${process.env.COOKIE_SECURE === 'true' ? '; Secure' : ''}`
   };
 }
 

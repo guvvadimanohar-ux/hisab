@@ -23,7 +23,7 @@ Configuration in `.env`:
 ```bash
 AA_PROVIDER=setu         # setu | finvu
 AA_ENVIRONMENT=sandbox   # sandbox | production
-AA_MOCK_MODE=true        # Set to false only with approved FIU credentials
+AA_MOCK_MODE=false       # Set true only when intentionally using demo data
 ```
 
 ## 3. Consent-Based Data Flow

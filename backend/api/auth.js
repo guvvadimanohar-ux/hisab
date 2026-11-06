@@ -7,10 +7,38 @@ async function handleAuthRoutes(req, res, pathname, searchParams, context) {
   const { db, auth, helpers } = context;
   const { sendJson, sendError, guardMutation, parseBody, getClientIp, securityLog } = helpers;
 
+  // Store profile is scoped to the authenticated merchant.
+  if (pathname === '/api/auth/profile' && ['GET', 'PUT'].includes(req.method)) {
+    if (req.method === 'PUT' && !guardMutation(req, res, 'profile', 30)) return true;
+    const user = auth.getSessionUser(db, req);
+    if (!user) { sendError(res, 401, 'UNAUTHORIZED', 'Please sign in to edit your shop.'); return true; }
+    db.exec('CREATE TABLE IF NOT EXISTS shop_profiles (user_id TEXT PRIMARY KEY REFERENCES users(id), details TEXT NOT NULL)');
+    if (req.method === 'GET') {
+      const row = db.prepare('SELECT details FROM shop_profiles WHERE user_id = ?').get(user.id);
+      sendJson(res, 200, { success: true, data: { ...user, ...(row ? JSON.parse(row.details) : {}) } });
+      return true;
+    }
+    const body = await parseBody(req);
+    const profile = {};
+    for (const key of ['shopName', 'fullName', 'shopPhone', 'shopEmail', 'shopAddress', 'shopCity', 'shopState', 'shopPincode', 'shopType', 'shopGst', 'shopHours']) profile[key] = String(body[key] || '').trim().slice(0, 250);
+    if (!profile.shopName || !profile.fullName) { sendError(res, 400, 'MISSING_FIELDS', 'Shop name and owner name are required.'); return true; }
+    db.exec('BEGIN');
+    try {
+      db.prepare('UPDATE users SET shop_name = ?, full_name = ?, updated_at = ? WHERE id = ?').run(profile.shopName, profile.fullName, new Date().toISOString(), user.id);
+      db.prepare('INSERT INTO shop_profiles (user_id, details) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET details = excluded.details').run(user.id, JSON.stringify(profile));
+      db.exec('COMMIT');
+    } catch (error) { db.exec('ROLLBACK'); throw error; }
+    sendJson(res, 200, { success: true, data: { ...user, ...profile } });
+    return true;
+  }
+
   // POST /api/auth/register
   if (pathname === '/api/auth/register' && req.method === 'POST') {
     if (!guardMutation(req, res, 'auth', 10)) return true;
     const body = await parseBody(req);
+    if (body.privacyConsent !== true || body.adultConfirmation !== true) {
+      sendError(res, 400, 'CONSENT_REQUIRED', 'Please read the privacy notice, agree to the terms and confirm you are 18 or older.'); return true;
+    }
     const shopName = String(body.shopName || '').trim();
     const password = String(body.password || '');
 
@@ -45,6 +73,9 @@ async function handleAuthRoutes(req, res, pathname, searchParams, context) {
       email,
       password
     });
+    require('../services/privacyService').savePermissions(db, userId, {ai:false,voice:false});
+    db.exec('CREATE TABLE IF NOT EXISTS registration_consents (user_id TEXT PRIMARY KEY REFERENCES users(id), version TEXT NOT NULL, accepted_at TEXT NOT NULL)');
+    db.prepare('INSERT INTO registration_consents VALUES (?,?,?)').run(userId,require('../services/privacyService').VERSION,new Date().toISOString());
     securityLog('USER_REGISTERED', { userId });
     sendJson(res, 201, {
       success: true,
@@ -85,7 +116,7 @@ async function handleAuthRoutes(req, res, pathname, searchParams, context) {
   // POST /api/auth/logout
   if (pathname === '/api/auth/logout' && req.method === 'POST') {
     auth.revokeSession(db, req);
-    sendJson(res, 200, { success: true, message: 'Workspace locked. You have been signed out.' });
+    sendJson(res, 200, { success: true, message: 'Workspace locked. You have been signed out.' }, { 'Set-Cookie': 'hisab_session_id=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0' });
     return true;
   }
 

@@ -96,7 +96,7 @@ providers/accountAggregator/
 ```
 
 Switch providers with `AA_PROVIDER`; run the whole flow offline with
-`AA_MOCK_MODE=true` (default). Mock data is always badged **DEMO DATA** and is
+`AA_MOCK_MODE=true` (opt-in). Mock data is always badged **DEMO DATA** and is
 never mixed with live AA data (each connection carries its own provider tag).
 
 ### Security model (multi-user)
@@ -181,7 +181,7 @@ This verifies your Node.js runtime, checks the Ollama daemon, and creates your `
 Or configure manually:
 ```bash
 cp .env.example .env
-# Review .env - mock mode is ON by default (AA_MOCK_MODE=true)
+# Review .env - mock mode is OFF by default; set AA_MOCK_MODE=true to opt in
 ```
 Then start the server (`./scripts/start.sh` or `node server.js`), open
 http://localhost:8099, **register an account** and use **Connect Bank Account**.
@@ -417,7 +417,7 @@ Set `AA_ENVIRONMENT=production` and update credentials with production values.
 | `PORT` | `8099` | HTTP server port |
 | `AA_PROVIDER` | `setu` | Account Aggregator provider: `setu`, `finvu`, or `mock` |
 | `AA_ENVIRONMENT` | `sandbox` | Environment: `sandbox` or `production` |
-| `AA_MOCK_MODE` | `true` | Enable mock mode for development (overrides provider) |
+| `AA_MOCK_MODE` | `false` | Enable mock mode for development (overrides provider) |
 | `AA_CLIENT_ID` | *(empty)* | Setu client ID (from Setu Bridge dashboard) |
 | `AA_CLIENT_SECRET` | *(empty)* | Setu client secret |
 | `AA_PRODUCT_ID` | *(empty)* | Setu product instance ID |

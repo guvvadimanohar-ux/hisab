@@ -353,6 +353,8 @@ async function handleBankRoutes(req, res, pathname, searchParams, context) {
         await aaService.revokeConsent(acc.consent_id);
       } catch (e) {
         securityLog('CONSENT_REVOKE_FAILED', { consentId: acc.consent_id.slice(0, 12) + '***', error: e.message });
+        sendError(res, 502, 'CONSENT_REVOKE_FAILED', 'The provider could not confirm consent withdrawal. Your connection was kept; retry or revoke consent directly with the provider.');
+        return true;
       }
       db.prepare('UPDATE consents SET status = ?, updated_at = ? WHERE id = ? AND user_id = ?')
         .run('REVOKED', new Date().toISOString(), acc.consent_id, user.id);

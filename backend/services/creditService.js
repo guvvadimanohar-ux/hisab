@@ -8,7 +8,7 @@ const crypto = require('node:crypto');
 const { getOrCreateShopForUser } = require('./database.js');
 const { recordTransaction } = require('./transactionEngine.js');
 
-function issueCredit(db, userId, { customerId, customerName, amount, dueDate, description, issuedAt }) {
+function issueCredit(db, userId, { customerId, customerName, amount, dueDate, description, issuedAt, overrideLimit = false }) {
   const shop = getOrCreateShopForUser(db, userId);
   const shopId = shop ? shop.id : `SHOP-${userId}`;
 
@@ -37,6 +37,13 @@ function issueCredit(db, userId, { customerId, customerName, amount, dueDate, de
   }
 
   if (!cust) throw new Error('Customer is required for issuing credit');
+
+  if (db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='shop_tool_state'").get()) {
+    const row = db.prepare('SELECT data FROM shop_tool_state WHERE user_id=?').get(userId);
+    const limit = row ? JSON.parse(row.data).limits?.[cust.id] : undefined;
+    const due = Number(db.prepare('SELECT COALESCE(SUM(outstanding_amount),0) AS total FROM credits WHERE user_id=? AND customer_id=?').get(userId,cust.id).total);
+    if (limit != null && due + numAmount > limit && overrideLimit !== true) throw Error(`Credit limit exceeded: recorded dues ₹${due}, new balance ₹${due+numAmount}, owner limit ₹${limit}. Review and approve an override.`);
+  }
 
   const creditId = `CRD-${Date.now().toString().slice(-6)}-${crypto.randomBytes(2).toString('hex')}`;
   const now = new Date().toISOString();
@@ -289,9 +296,51 @@ function getCreditSummary(db, userId) {
   };
 }
 
+function updateCredit(db, userId, creditId, updates = {}) {
+  const existing = db.prepare('SELECT * FROM credits WHERE id = ? AND user_id = ?').get(creditId, userId);
+  if (!existing) return null;
+
+  let { status, dueDate, description, amount, paidAmount } = updates;
+
+  let newAmount = amount !== undefined ? Math.abs(parseFloat(amount) || 0) : existing.amount;
+  let newPaid = paidAmount !== undefined ? Math.abs(parseFloat(paidAmount) || 0) : existing.paid_amount;
+  let newOutstanding = Math.max(0, newAmount - newPaid);
+  let newStatus = status ? String(status).trim() : existing.status;
+  let newDueDate = dueDate !== undefined ? (dueDate ? String(dueDate).slice(0, 10) : null) : existing.due_date;
+  let newDescription = description !== undefined ? String(description).trim() : existing.description;
+
+  if (newStatus === 'Paid' || newOutstanding <= 0) {
+    newStatus = 'Paid';
+    newOutstanding = 0;
+    newPaid = newAmount;
+  } else if (newStatus === 'Partially Paid' && newPaid === 0) {
+    newPaid = Math.round(newAmount * 0.5 * 100) / 100;
+    newOutstanding = newAmount - newPaid;
+  }
+
+  const nowIso = new Date().toISOString();
+  db.prepare(`
+    UPDATE credits
+    SET amount = ?, paid_amount = ?, outstanding_amount = ?, status = ?, due_date = ?, description = ?, updated_at = ?
+    WHERE id = ? AND user_id = ?
+  `).run(newAmount, newPaid, newOutstanding, newStatus, newDueDate, newDescription, nowIso, creditId, userId);
+
+  return db.prepare('SELECT * FROM credits WHERE id = ? AND user_id = ?').get(creditId, userId);
+}
+
+function deleteCredit(db, userId, creditId) {
+  const existing = db.prepare('SELECT * FROM credits WHERE id = ? AND user_id = ?').get(creditId, userId);
+  if (!existing) return false;
+
+  db.prepare('DELETE FROM credits WHERE id = ? AND user_id = ?').run(creditId, userId);
+  return true;
+}
+
 module.exports = {
   issueCredit,
   recordRepayment,
   listCredits,
-  getCreditSummary
+  getCreditSummary,
+  updateCredit,
+  deleteCredit
 };

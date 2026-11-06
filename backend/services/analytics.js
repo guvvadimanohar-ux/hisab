@@ -7,18 +7,20 @@
 // 1. Column Detection & Mapping Dictionary
 // =========================================================================
 
+const { categorizeTransaction } = require('./categorization.js');
+
 const COLUMN_SYNONYMS = {
-  date: ['date', 'txn_date', 'transaction_date', 'datetime', 'trans_date', 'value_date', 'posting_date', 'timestamp', 'time'],
+  date: ['date', 'txn_date', 'transaction_date', 'datetime', 'trans_date', 'value_date', 'posting_date', 'timestamp'],
   time: ['time', 'txn_time', 'transaction_time'],
-  transaction_id: ['transaction_id', 'txn_id', 'txnid', 'reference', 'ref', 'ref_no', 'utr', 'order_id', 'id', 'cheque_no', 'chq_no'],
+  transaction_id: ['transaction_id', 'txn_id', 'txnid', 'reference', 'ref', 'ref_no', 'utr', 'order_id', 'cheque_no', 'chq_no', 'id'],
   customer_name: ['customer', 'customer_name', 'customer_party', 'payer', 'party', 'party_name', 'merchant', 'beneficiary', 'client', 'name', 'account_name'],
-  description: ['description', 'narration', 'particulars', 'remarks', 'details', 'memo', 'note'],
+  description: ['transaction_details', 'description', 'narration', 'particulars', 'remarks', 'details', 'memo', 'note'],
   amount: ['amount', 'txn_amount', 'transaction_amount', 'value', 'total', 'net_amount', 'sum'],
-  debit: ['debit', 'dr', 'withdrawal', 'outflow', 'paid_out', 'debit_amount'],
-  credit: ['credit', 'cr', 'deposit', 'inflow', 'paid_in', 'credit_amount'],
+  debit: ['debit_amount', 'debit_amt', 'withdrawal', 'outflow', 'paid_out', 'dr_amount', 'debit'],
+  credit: ['credit_amount', 'credit_amt', 'deposit', 'inflow', 'paid_in', 'cr_amount', 'credit'],
   cash_flow_type: ['cash_flow', 'flow', 'flow_type', 'direction', 'cash_flow_type'],
-  transaction_type: ['type', 'transaction_type', 'txn_type', 'dr_cr', 'entry_type'],
-  payment_method: ['payment_method', 'payment_rail', 'method', 'mode', 'channel', 'provider', 'gateway', 'rail', 'instrument'],
+  transaction_type: ['transaction_type', 'txn_type', 'dr_cr', 'entry_type', 'type'],
+  payment_method: ['credit_debit_instrument', 'instrument', 'payment_method', 'payment_rail', 'method', 'mode', 'channel', 'provider', 'gateway', 'rail'],
   category: ['category', 'txn_category', 'tag', 'purpose', 'head', 'account_type'],
   balance: ['balance', 'running_balance', 'closing_balance', 'account_balance'],
   loan_id: ['loan_id', 'loan_no', 'loan_ref', 'facility_id'],
@@ -58,6 +60,9 @@ function detectColumnMappings(headers) {
     for (const header of cleanHeaders) {
       if (usedHeaders.has(header)) continue;
       const lower = header.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+      if (field === 'debit' || field === 'credit') {
+        if (lower.includes('instrument') || lower.includes('type')) continue;
+      }
       const matches = synonyms.some(syn => lower.includes(syn));
       if (matches) {
         detected[field] = header;
@@ -76,14 +81,14 @@ function detectColumnMappings(headers) {
 }
 
 // =========================================================================
-// 2. CSV Parser (RFC-4180 Compliant with Quote Handling)
+// 2. CSV Parser (RFC-4180 Compliant with Header Detection & Quote Handling)
 // =========================================================================
 
 function parseCsvString(csvText) {
   if (!csvText || typeof csvText !== 'string') return { headers: [], rows: [] };
 
-  const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
-  if (lines.length === 0) return { headers: [], rows: [] };
+  const rawLines = csvText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+  if (rawLines.length === 0) return { headers: [], rows: [] };
 
   function parseLine(line) {
     const cells = [];
@@ -109,18 +114,46 @@ function parseCsvString(csvText) {
     return cells;
   }
 
-  const rawHeaders = parseLine(lines[0]);
+  // Scan first 20 lines to locate the actual header line (skipping statement preamble / title)
+  const HEADER_KEYWORDS = [
+    'date', 'amount', 'transaction', 'details', 'description', 'type',
+    'utr', 'particulars', 'narration', 'debit', 'credit', 'balance',
+    'ref', 'instrument', 'time', 'party', 'customer', 'payer', 'status', 'mode'
+  ];
+
+  let headerIndex = 0;
+  let bestScore = -1;
+
+  for (let i = 0; i < Math.min(rawLines.length, 20); i++) {
+    const cells = parseLine(rawLines[i]);
+    if (cells.length < 2) continue;
+    let score = 0;
+    for (const c of cells) {
+      const lower = c.toLowerCase().trim();
+      if (HEADER_KEYWORDS.some(k => lower.includes(k))) score++;
+    }
+    if (score > bestScore && score >= 2) {
+      bestScore = score;
+      headerIndex = i;
+    }
+  }
+
+  const rawHeaders = parseLine(rawLines[headerIndex]);
   const rows = [];
 
-  for (let i = 1; i < lines.length; i++) {
-    const cells = parseLine(lines[i]);
-    if (cells.length > 0 && cells.some(c => c !== '')) {
-      const rowObj = {};
-      rawHeaders.forEach((h, idx) => {
-        rowObj[h] = cells[idx] || '';
-      });
-      rows.push(rowObj);
-    }
+  for (let i = headerIndex + 1; i < rawLines.length; i++) {
+    const cells = parseLine(rawLines[i]);
+    if (cells.length === 0 || cells.every(c => c === '')) continue;
+    // Skip single-cell disclaimers or footer text
+    if (cells.length === 1 && cells[0].length > 40) continue;
+    const lowerFirst = cells[0].toLowerCase();
+    if (lowerFirst.startsWith('this is an automatically') || lowerFirst.startsWith('disclaimer') || lowerFirst.startsWith('total')) continue;
+
+    const rowObj = {};
+    rawHeaders.forEach((h, idx) => {
+      rowObj[h] = cells[idx] || '';
+    });
+    rows.push(rowObj);
   }
 
   return { headers: rawHeaders, rows };
@@ -156,10 +189,41 @@ function cleanDate(val) {
     return `${year}-${month}-${day}`;
   }
 
-  // Try parsing with Date constructor
+  // Try Month DD, YYYY (e.g. Sept 02, 2026, Aug 22, 2026)
+  const MONTH_MAP = {
+    jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
+    jul: '07', aug: '08', sep: '09', sept: '09', oct: '10', nov: '11', dec: '12'
+  };
+  const mdyMatch = str.match(/^([a-zA-Z]{3,9})\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})/);
+  if (mdyMatch) {
+    const mKey = mdyMatch[1].toLowerCase();
+    const month = MONTH_MAP[mKey] || MONTH_MAP[mKey.slice(0, 3)];
+    if (month) {
+      const day = mdyMatch[2].padStart(2, '0');
+      const year = mdyMatch[3];
+      return `${year}-${month}-${day}`;
+    }
+  }
+
+  // Try DD Month YYYY (e.g. 02 Sept 2026 or 02-Sep-2026)
+  const dmyAlpha = str.match(/^(\d{1,2})[\s\-]([a-zA-Z]{3,9})[\s\-,]+(\d{4})/);
+  if (dmyAlpha) {
+    const mKey = dmyAlpha[2].toLowerCase();
+    const month = MONTH_MAP[mKey] || MONTH_MAP[mKey.slice(0, 3)];
+    if (month) {
+      const day = dmyAlpha[1].padStart(2, '0');
+      const year = dmyAlpha[3];
+      return `${year}-${month}-${day}`;
+    }
+  }
+
+  // Fallback parsing with Date constructor, preserving calendar date
   const parsed = new Date(str);
   if (!isNaN(parsed.getTime())) {
-    return parsed.toISOString().slice(0, 10);
+    const y = parsed.getFullYear();
+    const m = String(parsed.getMonth() + 1).padStart(2, '0');
+    const d = String(parsed.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
   }
 
   return new Date().toISOString().slice(0, 10);
@@ -169,7 +233,7 @@ function cleanDate(val) {
  * Normalizes an array of raw rows using mapping specifications
  * Returns cleaned transactions, duplicate tracker, and data quality metrics.
  */
-function normalizeTransactions(rawRows, mapping, datasetId = 'DS-1', sourceFile = 'import.csv') {
+function normalizeTransactions(rawRows, mapping = {}, datasetId = 'DS-1', sourceFile = 'import.csv') {
   let validRows = 0;
   let invalidRows = 0;
   let duplicateRows = 0;
@@ -181,20 +245,30 @@ function normalizeTransactions(rawRows, mapping, datasetId = 'DS-1', sourceFile 
   const normalized = [];
 
   rawRows.forEach((row, index) => {
-    // 1. Customer Name
-    let customerName = (row[mapping.customer_name] || '').trim();
+    // 1. Description & Customer Name Extraction
+    const rawDesc = (row[mapping.description] || row['Transaction Details'] || row['description'] || row['narration'] || '').trim();
+    let customerName = (row[mapping.customer_name] || row['Customer Name'] || row['Party Name'] || '').trim();
+
     if (!customerName) {
-      missingCustomerCount++;
-      customerName = `Unspecified Party #${index + 1}`;
+      // Check if description has "Paid to X" or "Received from X" or "Payment to X"
+      const partyMatch = rawDesc.match(/^(?:Paid\s+to|Payment\s+to|Transfer\s+to|Received\s+from)\s+(.+)/i);
+      if (partyMatch) {
+        customerName = partyMatch[1].trim();
+      } else if (rawDesc && rawDesc.length < 50) {
+        customerName = rawDesc;
+      } else {
+        missingCustomerCount++;
+        customerName = `Party #${index + 1}`;
+      }
     }
 
     // 2. Date
-    const rawDate = row[mapping.date];
+    const rawDate = row[mapping.date] || row['Date'] || row['date'];
     if (!rawDate) missingDateCount++;
     const date = cleanDate(rawDate);
 
     // 3. Time
-    const time = (row[mapping.time] || '12:00:00').trim();
+    const time = (row[mapping.time] || row['Time'] || row['time'] || '12:00:00').trim();
 
     // 4. Amount & Cash Flow Direction
     let amount = 0;
@@ -203,7 +277,7 @@ function normalizeTransactions(rawRows, mapping, datasetId = 'DS-1', sourceFile 
 
     const debitVal = cleanNumber(row[mapping.debit]);
     const creditVal = cleanNumber(row[mapping.credit]);
-    const directAmount = cleanNumber(row[mapping.amount]);
+    const directAmount = cleanNumber(row[mapping.amount] || row['Amount'] || row['amount']);
 
     if (debitVal !== null && debitVal > 0) {
       amount = debitVal;
@@ -215,9 +289,22 @@ function normalizeTransactions(rawRows, mapping, datasetId = 'DS-1', sourceFile 
       transactionType = 'RECEIPT';
     } else if (directAmount !== null) {
       amount = Math.abs(directAmount);
-      // Direction detection from type or signed amount
-      const rawType = String(row[mapping.transaction_type] || '').toLowerCase();
-      if (directAmount < 0 || rawType.includes('out') || rawType.includes('debit') || rawType.includes('payout') || rawType.includes('dr') || rawType.includes('expense') || rawType.includes('given')) {
+      // Direction detection from type, instrument, or description
+      const rawType = String(row[mapping.transaction_type] || row['Transaction Type'] || row['type'] || '').toLowerCase();
+      const lowerDesc = rawDesc.toLowerCase();
+
+      if (
+        directAmount < 0 ||
+        rawType.includes('out') ||
+        rawType.includes('debit') ||
+        rawType.includes('payout') ||
+        rawType.includes('dr') ||
+        rawType.includes('expense') ||
+        rawType.includes('given') ||
+        lowerDesc.startsWith('paid to') ||
+        lowerDesc.startsWith('payment to') ||
+        lowerDesc.startsWith('transfer to')
+      ) {
         cashFlowType = 'OUTFLOW';
         transactionType = rawType.includes('loan') ? 'LOAN_GIVEN' : 'EXPENSE';
       } else {
@@ -231,7 +318,7 @@ function normalizeTransactions(rawRows, mapping, datasetId = 'DS-1', sourceFile 
     }
 
     // Explicit Type Overrides
-    const explicitType = String(row[mapping.transaction_type] || '').toUpperCase();
+    const explicitType = String(row[mapping.transaction_type] || row['Transaction Type'] || '').toUpperCase();
     if (explicitType.includes('LOAN') && (explicitType.includes('GIVEN') || explicitType.includes('DISBURS'))) {
       transactionType = 'LOAN_GIVEN';
       cashFlowType = 'OUTFLOW';
@@ -253,13 +340,20 @@ function normalizeTransactions(rawRows, mapping, datasetId = 'DS-1', sourceFile 
     }
 
     // 6. Reference / Transaction ID
-    const txnId = (row[mapping.transaction_id] || `TXN-${datasetId}-${index + 1}`).trim();
-    const referenceNumber = (row[mapping.reference_number] || txnId).trim();
-    const description = (row[mapping.description] || `${transactionType} via ${customerName}`).trim();
-    const paymentMethod = (row[mapping.payment_method] || 'Bank / Gateway').trim();
-    const category = (row[mapping.category] || (transactionType.startsWith('LOAN') ? 'Loan Ledger' : 'Commercial Trade')).trim();
-    const status = (row[mapping.status] || 'Settled').trim();
-    const balance = cleanNumber(row[mapping.balance]) || 0;
+    const rawRef = (row[mapping.transaction_id] || row['Transaction ID'] || row['UTR'] || row['Reference Number'] || '').trim();
+    const txnId = rawRef || `TXN-${datasetId}-${index + 1}`;
+    const referenceNumber = (row[mapping.reference_number] || rawRef || txnId).trim();
+    const description = rawDesc || `${transactionType} via ${customerName}`;
+    const paymentMethod = (row[mapping.payment_method] || row['Credit/debit instrument'] || (description.toUpperCase().includes('UPI') ? 'UPI' : 'Bank / Gateway')).trim();
+    
+    // Auto-categorize if no explicit category is provided
+    let category = (row[mapping.category] || row['Category'] || '').trim();
+    if (!category || category === 'Commercial Trade') {
+      category = categorizeTransaction({ description, merchant: customerName, cash_flow_type: cashFlowType });
+    }
+
+    const status = (row[mapping.status] || row['Status'] || 'Settled').trim();
+    const balance = cleanNumber(row[mapping.balance] || row['Balance']) || 0;
 
     // 7. Duplicate Detection Signature (date + amount + customerName + referenceNumber)
     const signature = `${date}|${amount.toFixed(2)}|${customerName.toLowerCase()}|${referenceNumber.toLowerCase()}`;

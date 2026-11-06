@@ -24,7 +24,7 @@ function normalizeConsentStatus(rawStatus) {
 class AccountAggregatorService {
   constructor(config = {}) {
     this.providerName = config.provider || process.env.AA_PROVIDER || 'setu';
-    this.mockMode = config.mockMode ?? (process.env.AA_MOCK_MODE !== 'false');
+    this.mockMode = config.mockMode ?? (String(process.env.AA_MOCK_MODE || 'false').toLowerCase() === 'true');
 
     // Instantiate appropriate provider
     if (this.mockMode) {
@@ -34,7 +34,7 @@ class AccountAggregatorService {
     } else if (this.providerName === 'finvu') {
       this.provider = new FinvuProvider(config);
     } else {
-      this.provider = new MockAAProvider(config);
+      throw new Error(`Unsupported Account Aggregator provider: ${this.providerName}`);
     }
   }
 

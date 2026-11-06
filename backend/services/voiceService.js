@@ -36,7 +36,7 @@ class VoiceService {
    * End-to-end voice query pipeline:
    * Audio/Query -> Transcription -> Language Detection -> AI Financial Tools -> Answer -> TTS Audio Synthesis
    */
-  async processVoiceQuery(db, aiService, userId, { audioData, query, languageHint, sessionId }) {
+  async processVoiceQuery(db, aiService, userId, { audioData, query, languageHint, sessionId, requestId }) {
     let resolvedQuery = (query || '').trim();
     let detectedLanguage = languageHint || null;
 
@@ -55,7 +55,7 @@ class VoiceService {
     const aiResult = await aiService.processQuery(resolvedQuery, {
       sessionId: sessionId || `voice-${userId || 'demo'}`,
       languageHint: detectedLanguage,
-      userId
+      userId, requestId
     });
 
     // 3. Synthesize audio response for the answer
@@ -80,6 +80,8 @@ class VoiceService {
         dataUrl: audioPayload.dataUrl,
         audioBase64: audioPayload.audioBase64
       } : null,
+      actionApplied: aiResult.actionApplied || false,
+      source: aiResult.source,
       isDemo: this.provider.isMockMode()
     };
   }

@@ -10,8 +10,10 @@ async function handleVoiceRoutes(req, res, pathname, searchParams, context) {
   // POST /api/voice/transcribe -> Speech to Text
   if (pathname === '/api/voice/transcribe' && req.method === 'POST') {
     if (!guardMutation(req, res, 'voice', 30)) return true;
-    const user = requireAuth(req, res, { allowDemo: true });
+    const user = requireAuth(req, res);
     if (!user) return true;
+    const consent = require('../services/privacyService').permissions(db,user.id);
+    if (!consent.ai || !consent.voice) { sendError(res,403,'CONSENT_REQUIRED','Enable optional AI and voice in Settings → Privacy and permissions first.'); return true; }
 
     try {
       const body = await parseBody(req);
@@ -28,8 +30,10 @@ async function handleVoiceRoutes(req, res, pathname, searchParams, context) {
   // POST /api/voice/query -> Full voice pipeline: Query -> AI Analysis -> TTS Audio
   if (pathname === '/api/voice/query' && req.method === 'POST') {
     if (!guardMutation(req, res, 'voice', 30)) return true;
-    const user = requireAuth(req, res, { allowDemo: true });
+    const user = requireAuth(req, res);
     if (!user) return true;
+    const consent = require('../services/privacyService').permissions(db,user.id);
+    if (!consent.ai || !consent.voice) { sendError(res,403,'CONSENT_REQUIRED','Enable optional AI and voice in Settings → Privacy and permissions first.'); return true; }
 
     try {
       const body = await parseBody(req);
@@ -37,6 +41,7 @@ async function handleVoiceRoutes(req, res, pathname, searchParams, context) {
         audioData: body.audioData || body.audio,
         query: body.query,
         languageHint: body.languageHint,
+        requestId: body.requestId,
         sessionId: body.sessionId
       });
       sendJson(res, 200, result);
@@ -49,8 +54,10 @@ async function handleVoiceRoutes(req, res, pathname, searchParams, context) {
   // POST /api/voice/speak -> Text to Speech
   if (pathname === '/api/voice/speak' && req.method === 'POST') {
     if (!guardMutation(req, res, 'voice', 30)) return true;
-    const user = requireAuth(req, res, { allowDemo: true });
+    const user = requireAuth(req, res);
     if (!user) return true;
+    const consent = require('../services/privacyService').permissions(db,user.id);
+    if (!consent.ai || !consent.voice) { sendError(res,403,'CONSENT_REQUIRED','Enable optional AI and voice in Settings → Privacy and permissions first.'); return true; }
 
     try {
       const body = await parseBody(req);

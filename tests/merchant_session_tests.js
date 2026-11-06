@@ -1,0 +1,30 @@
+const assert=require('node:assert/strict');
+const vm=require('node:vm');const fs=require('node:fs');
+const {initializeDatabase}=require('../backend/services/database');
+const auth=require('../backend/services/authService');
+const {handleAuthRoutes}=require('../backend/api/auth');
+(async()=>{
+ const db=initializeDatabase(':memory:');
+ const session=auth.createUserWithSession(db,{shopName:'Session test',phone:'9000000042',password:'testpass'});
+ let payload,status;
+ const user=auth.getUserById(db,session.userId);
+ const response={setHeader:()=>{}};
+ const context={db,auth:{...auth,getSessionUser:()=>user},helpers:{sendJson:(_,code,data)=>{status=code;payload=data;},sendError:()=>{},requireAuth:()=>user}};
+ // The handler reads its imported auth module, so use the real session cookie.
+ const req={method:'GET',headers:{cookie:session.setCookie.split(';')[0]}};
+ await handleAuthRoutes(req,response,'/api/auth/me',null,context);
+ assert.equal(status,200);assert.equal(payload.data.user.id,user.id);
+ let offlineCalls=0,updates=0;
+ const localRecords={transactions:[{amount:42}]};
+ const sandbox={window:{location:{protocol:'http:',hostname:'localhost'},offlineHisabEngine:{data:localRecords}},navigator:{onLine:true},document:{addEventListener:()=>{}},console,fetch:async()=>({ok:true,json:async()=>payload})};
+ vm.createContext(sandbox);vm.runInContext(fs.readFileSync(require.resolve('../frontend/js/merchantApp'),'utf8')+'\nwindow.MerchantClass=HisabMerchantApp;',sandbox);
+ const app=Object.create(sandbox.window.MerchantClass.prototype);
+ app.isOfflineMode=true;app.updateUserUI=()=>updates++;app.activateOfflineMode=()=>{offlineCalls++;app.isOfflineMode=true;};
+ await app.checkAuth();assert.equal(app.isOfflineMode,false);assert.equal(app.currentUser.id,user.id);assert.equal(updates,1);assert.equal(offlineCalls,0);
+ sandbox.fetch=async()=>({ok:false,json:async()=>({success:false,error:{code:'UNAUTHORIZED'}})});
+ await app.checkAuth();assert.equal(app.isOfflineMode,true);assert.equal(offlineCalls,1);
+ sandbox.fetch=async()=>{throw Error('Network unavailable')};await app.checkAuth();assert.equal(offlineCalls,2);
+ sandbox.window.IS_STANDALONE=true;sandbox.fetch=async()=>{throw Error('Must not fetch in standalone')};await app.checkAuth();assert.equal(offlineCalls,3);
+ assert.equal(localRecords.transactions[0].amount,42);
+ db.close();console.log('PASS: actual session response selects server mode; expired session, unavailable server and standalone retain offline support; local records preserved.');
+})().catch(e=>{console.error(e);process.exitCode=1});

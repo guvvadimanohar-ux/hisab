@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "@visx/curve": "^3.12.0",
+    "@visx/event": "^3.12.0",
+    "@visx/grid": "^3.12.0",
+    "@visx/responsive": "^3.12.0",
+    "@visx/scale": "^3.12.0",
+    "@visx/shape": "^3.12.0",
+    "clsx": "^2.1.1",
+    "d3-array": "^3.2.4",
+    "d3-scale": "^4.0.2",
+    "d3-shape": "^3.2.0",
+    "motion": "^12.27.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "esbuild": "^0.25.12",
+    "tailwindcss": "^4.1.18"
+  },
+  "name": "hisab-dashboard-charts",
+  "private": true,
+  "scripts": {
+    "build": "node build.cjs && tailwindcss -i styles.css -o ../../frontend/css/bklitUtilities.css --minify"
+  }
+}

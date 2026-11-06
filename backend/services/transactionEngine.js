@@ -78,7 +78,7 @@ function recordTransaction(db, userId, txnData) {
   }
 
   // Determine Cash Flow Type & Transaction Type
-  let cashFlowType = txnData.cashFlowType || txnData.cash_flow_type;
+  let cashFlowType = txnData.cashFlowType || txnData.cash_flow_type || ({IN:'INFLOW',OUT:'OUTFLOW',INFLOW:'INFLOW',OUTFLOW:'OUTFLOW'}[txnData.flow]);
   let txnType = txnData.transactionType || txnData.transaction_type || txnData.type || 'Income';
 
   if (!cashFlowType) {
@@ -91,7 +91,7 @@ function recordTransaction(db, userId, txnData) {
   }
   cashFlowType = cashFlowType.toUpperCase() === 'OUTFLOW' ? 'OUTFLOW' : 'INFLOW';
 
-  const date = txnData.date ? String(txnData.date).slice(0, 10) : new Date().toISOString().slice(0, 10);
+  const date = txnData.date ? String(txnData.date).slice(0, 10) : require('../../frontend/js/dailyWorkflow').day();
   const time = txnData.time || new Date().toTimeString().slice(0, 8);
   const source = (txnData.source || 'MANUAL').toUpperCase();
 
